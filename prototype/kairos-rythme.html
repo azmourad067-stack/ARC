@@ -1,0 +1,514 @@
+<title>KAIROS Rythme</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell — sticky header with tabs; each tab is a working view (form + results side by side on desktop, stacked on phone). */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #e9edf3; --fg: #121e2f; --muted: #586579; --line: #d4dbe5;
+  --accent: #2550b8; --accent-soft: #e2e9fa; --on-accent: #ffffff;
+  --ok: #1d7a4b; --ok-soft: #e0f2e8; --warn: #985a00; --warn-soft: #faefd9; --crit: #b3312a; --crit-soft: #fae3e1;
+  --font-text: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+    --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+    --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+  --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+  --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-text); font-size: 15px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+h1, h2, h3 { margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: 1.15rem; font-weight: 700; }
+h2 { font-size: 1.2rem; font-weight: 600; }
+h3 { font-size: 1rem; font-weight: 600; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-inner { max-width: 1100px; margin: 0 auto; padding-block: 10px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 6px; }
+.brand { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.brand .tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.tabs { display: flex; gap: 2px; overflow-x: auto; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--muted); font-weight: 500; white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
+.tab[aria-current="page"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tab .count { font-family: var(--font-mono); font-size: 0.72rem; background: var(--crit-soft); color: var(--crit); border-radius: 999px; padding: 0 6px; }
+
+main { max-width: 1100px; margin: 0 auto; padding-block: 18px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+.view { display: flex; flex-direction: column; gap: 18px; }
+.fiction { background: var(--warn-soft); border-radius: var(--r); padding: 10px 14px; font-size: 0.88rem; }
+.intro { display: flex; flex-direction: column; gap: 4px; }
+.intro p { max-width: 75ch; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.split { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.spread { justify-content: space-between; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.88rem; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field > span { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+input[type="text"], input[type="number"], input[type="search"], select, textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 7px 10px; }
+textarea { min-height: 70px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--muted); }
+
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.crit { background: var(--crit-soft); color: var(--crit); }
+.pill.neutral { background: var(--surface-2); color: var(--muted); }
+.rid { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); background: var(--accent-soft); padding: 0 6px; border-radius: 4px; white-space: nowrap; }
+
+/* inclusion */
+.summary { display: flex; gap: 10px; flex-wrap: wrap; }
+.summary .s { background: var(--surface-2); border-radius: 6px; padding: 8px 12px; display: flex; flex-direction: column; min-width: 110px; }
+.summary .v { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 600; }
+.summary .l { font-size: 0.78rem; color: var(--muted); }
+.study { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.study.ok { border-left: 4px solid var(--ok); }
+.study.warn { border-left: 4px solid var(--warn); }
+.study.crit { border-left: 4px solid var(--line); }
+.study summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.study summary::-webkit-details-marker { display: none; }
+.study summary .name { font-weight: 600; }
+.study summary .desc { grid-column: 1 / -1; font-size: 0.84rem; color: var(--muted); }
+.study .body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+.crits { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.crits li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 0.9rem; }
+.mark { font-family: var(--font-mono); font-weight: 600; text-align: center; }
+.mark.t { color: var(--ok); } .mark.f { color: var(--crit); } .mark.u { color: var(--warn); }
+.src { font-size: 0.78rem; color: var(--muted); }
+.actions { background: var(--surface-2); border-radius: 6px; padding: 10px 12px; font-size: 0.88rem; display: flex; flex-direction: column; gap: 4px; }
+.alert { border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.alert.crit { background: var(--crit-soft); }
+.alert.warn { background: var(--warn-soft); }
+.alert.info { background: var(--accent-soft); }
+.alert strong { font-weight: 600; }
+.clar-link { font-size: 0.85rem; background: var(--accent-soft); border-radius: 6px; padding: 8px 10px; }
+.clar-link button { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; font-size: inherit; }
+
+/* clarifications */
+.clar { border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--surface); scroll-margin-top: 120px; }
+.clar.hl { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.clar .q { font-weight: 600; }
+.clar .meta { font-size: 0.8rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.match { border: 1px dashed var(--accent); border-radius: var(--r); padding: 12px; display: flex; flex-direction: column; gap: 6px; background: var(--accent-soft); }
+
+/* suivi */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.sev { width: 6px; padding: 0; }
+td.sev.crit { background: var(--crit); } td.sev.warn { background: var(--warn); }
+tr.done td { opacity: 0.45; text-decoration: line-through; }
+tr.done td.keep { text-decoration: none; opacity: 1; }
+.centres { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.centre { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.centre .v { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 600; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 99px; background: var(--ok); }
+.bar.warn > i { background: var(--warn); } .bar.crit > i { background: var(--crit); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><h1>KAIROS Rythme</h1><span class="tag">Prototype · données fictives</span></div>
+    <nav class="tabs" aria-label="Modules">
+      <button class="tab" type="button" data-view="inclusion">Inclusion</button>
+      <button class="tab" type="button" data-view="clarifications">Clarifications</button>
+      <button class="tab" type="button" data-view="suivi">Suivi <span class="count" id="suivi-count"></span></button>
+      <button class="tab" type="button" data-view="regles">Règles</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="fiction"><strong>Prototype de démonstration.</strong> Patients, centres, clarifications et critères sont <strong>fictifs</strong> et simplifiés. Ils s'inspirent seulement des descriptions publiques des études et ne reproduisent pas les protocoles réels. Ne pas utiliser pour une décision d'inclusion.</p>
+
+  <section class="view" id="view-inclusion">
+    <div class="intro"><h2>Routeur d'inclusion à l'implantation</h2>
+      <p class="muted">Décrivez le patient au moment de la décision ou de l'implantation : KAIROS indique les études du réseau concernées, la règle et la source derrière chaque critère, les incompatibilités de co-inclusion et la notice à utiliser.</p></div>
+    <div class="split">
+      <div class="panel" id="patient-form">
+        <div class="label">Cas fictifs</div>
+        <div class="row" id="scenarios"></div>
+        <div class="label">Patient (fictif)</div>
+        <div class="grid2">
+          <label class="field"><span>Âge</span><input type="number" id="p-age" min="0" max="110"></label>
+          <label class="field"><span>Moment</span><select id="p-moment"><option value="decision">Décision d'implantation à venir</option><option value="implante">Implantation réalisée</option></select></label>
+        </div>
+        <label class="field"><span>Dispositif</span><select id="p-device">
+          <option value="none">Pas encore choisi</option>
+          <option value="tv">DAI transveineux (simple ou double chambre)</option>
+          <option value="crtd">CRT-D (resynchronisation avec défibrillation)</option>
+          <option value="sicd">DAI sous-cutané</option>
+          <option value="evicd">DAI extravasculaire</option>
+          <option value="micra_av">Pacemaker sans sonde Micra AV</option>
+          <option value="pm">Pacemaker conventionnel</option>
+        </select></label>
+        <div class="grid2">
+          <label class="field"><span>Prévention</span><select id="p-prev"><option value="">Inconnue</option><option value="primaire">Primaire</option><option value="secondaire">Secondaire</option><option value="na">Sans objet</option></select></label>
+          <label class="field"><span>FEVG (%)</span><input type="number" id="p-fevg" min="5" max="80" placeholder="Inconnue"></label>
+          <label class="field"><span>Infarctus antérieur</span><select id="p-idm"><option value="">Inconnu</option><option value="oui">Oui</option><option value="non">Non</option></select></label>
+          <label class="field"><span>Insuffisance cardiaque</span><select id="p-ic"><option value="">Inconnue</option><option value="oui">Oui</option><option value="non">Non</option></select></label>
+          <label class="field"><span>Tétralogie de Fallot</span><select id="p-fallot"><option value="non">Non</option><option value="oui">Oui</option><option value="">Inconnu</option></select></label>
+          <label class="field"><span>Algorithme HeartLogic</span><select id="p-hl"><option value="non">Non</option><option value="oui">Oui</option><option value="">Inconnu</option></select></label>
+          <label class="field"><span>Télécardiologie</span><select id="p-tele"><option value="oui">Activée</option><option value="non">Non activée</option><option value="">Inconnue</option></select></label>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0" id="results"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-clarifications" hidden>
+    <div class="intro"><h2>Clarifications partagées</h2>
+      <p class="muted">Chaque réponse validée par la coordination est reliée aux règles concernées et visible par tous les centres. Avant d'envoyer une question, KAIROS cherche si elle a déjà été posée.</p></div>
+    <div class="split">
+      <div class="panel">
+        <h3>Poser une question</h3>
+        <label class="field"><span>Étude</span><select id="cq-study"></select></label>
+        <label class="field"><span>Votre question</span><textarea id="cq-text" placeholder="Ex. : un patient réimplanté après une explantation reste-t-il dans la cohorte ?"></textarea></label>
+        <div id="cq-match"></div>
+        <div class="row"><button class="btn primary" id="cq-send" type="button">Envoyer à la coordination</button></div>
+        <p class="small muted" id="cq-msg"></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="row spread"><input type="search" id="c-search" placeholder="Rechercher dans les clarifications" aria-label="Rechercher" style="max-width:340px"><div class="chips" id="c-filter"></div></div>
+        <div id="c-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-suivi" hidden>
+    <div class="intro"><h2>Complétude du suivi</h2>
+      <p class="muted">KAIROS croise le flux de télécardiologie et les données d'étude pour signaler ce qui manque, par ordre de priorité. Cochez une ligne quand l'action est faite.</p></div>
+    <div class="centres" id="centres"></div>
+    <div class="row spread"><div class="chips" id="s-filter"></div><span class="small muted" id="s-meta"></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th aria-label="Gravité"></th><th>Fait</th><th>Patient</th><th>Centre</th><th>Étude</th><th>Signal</th><th>Règle</th><th>Action proposée</th></tr></thead>
+      <tbody id="s-body"></tbody></table></div>
+  </section>
+
+  <section class="view" id="view-regles" hidden>
+    <div class="intro"><h2>Référentiel des règles</h2>
+      <p class="muted">Le cœur de KAIROS : chaque critère de protocole est extrait sous forme de règle, rattaché à sa source, puis validé par un humain avant d'être appliqué. Ici, toutes les règles et sources sont fictives.</p></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Règle</th><th>Étude</th><th>Condition</th><th>Source</th><th>Validation</th></tr></thead>
+      <tbody id="r-body"></tbody></table></div>
+  </section>
+</main>
+
+<script>
+(function () {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const DAI = ["tv", "crtd", "sicd", "evicd"];
+const T = true, F = false, U = null;
+const yn = v => v === "oui" ? T : v === "non" ? F : U;
+
+/* ---------- Études et règles (fictives) ---------- */
+const STUDIES = [
+  { id: "DAIPP", name: "Cohorte DAI-PP", kind: "Cohorte", desc: "Patients porteurs d'un DAI, suivis en télécardiologie.", notice: "Notice d'information patient v4.2 (fictive)",
+    rules: [
+      { id: "DAIPP-R01", label: "Porteur d'un DAI (transveineux, CRT-D, sous-cutané ou extravasculaire)", src: "§4.1", test: p => p.device === "none" ? U : DAI.includes(p.device) },
+      { id: "DAIPP-R02", label: "Indication en prévention primaire ou secondaire", src: "§4.1", test: p => p.prev === "" ? U : ["primaire", "secondaire"].includes(p.prev) },
+      { id: "DAIPP-R03", label: "Télécardiologie activée", src: "§4.2", test: p => yn(p.tele) },
+      { id: "DAIPP-R04", label: "Inclusion après l'implantation", src: "§5.1", test: p => p.moment === "implante" }
+    ] },
+  { id: "HONEST", name: "HONEST", kind: "Cohorte", desc: "Cohorte des patients implantés d'un DAI sous-cutané.", notice: "Notice d'information patient v2.0 (fictive)",
+    rules: [
+      { id: "HON-R01", label: "DAI sous-cutané", src: "§4.1", test: p => p.device === "none" ? U : p.device === "sicd" },
+      { id: "HON-R02", label: "Inclusion après l'implantation", src: "§5.1", test: p => p.moment === "implante" }
+    ] },
+  { id: "FOREVER", name: "FOREVER", kind: "Cohorte", desc: "Cohorte des patients implantés d'un DAI extravasculaire.", notice: "Notice d'information patient v1.3 (fictive)",
+    rules: [
+      { id: "FOR-R01", label: "DAI extravasculaire", src: "§4.1", test: p => p.device === "none" ? U : p.device === "evicd" },
+      { id: "FOR-R02", label: "Inclusion après l'implantation", src: "§5.1", test: p => p.moment === "implante" }
+    ] },
+  { id: "AVCESAR", name: "AV-CESAR", kind: "Cohorte", desc: "Cohorte des patients implantés d'un pacemaker sans sonde Micra AV.", notice: "Notice d'information patient v1.1 (fictive)",
+    rules: [
+      { id: "AVC-R01", label: "Pacemaker sans sonde Micra AV (les autres modèles sans sonde ne sont pas concernés)", src: "§4.1", test: p => p.device === "none" ? U : p.device === "micra_av" },
+      { id: "AVC-R02", label: "Inclusion après l'implantation", src: "§5.1", test: p => p.moment === "implante" }
+    ] },
+  { id: "T4F", name: "DAI-T4F", kind: "Registre", desc: "Registre des patients avec tétralogie de Fallot porteurs d'un DAI.", notice: "Notice d'information patient v2.1 (fictive)",
+    rules: [
+      { id: "T4F-R01", label: "Tétralogie de Fallot", src: "§4.1", test: p => yn(p.fallot) },
+      { id: "T4F-R02", label: "Porteur d'un DAI", src: "§4.1", test: p => p.device === "none" ? U : DAI.includes(p.device) }
+    ] },
+  { id: "DILEMMA", name: "DILEMMA", kind: "Essai randomisé", desc: "Pertinence du DAI en prévention primaire après 70 ans. Randomisation avant l'implantation.", notice: "Notice d'information et consentement v3.0 (fictive)",
+    rules: [
+      { id: "DIL-R01", label: "Âge strictement supérieur à 70 ans", src: "§5.1", test: p => p.age === null ? U : p.age > 70 },
+      { id: "DIL-R02", label: "Indication de DAI en prévention primaire", src: "§5.1", test: p => p.prev === "" ? U : p.prev === "primaire" },
+      { id: "DIL-R03", label: "Avant l'implantation (la randomisation porte sur l'implantation)", src: "§6.2", test: p => p.moment === "decision" }
+    ] },
+  { id: "PROFID", name: "PROFID EHRA", kind: "Essai randomisé", desc: "Post-infarctus avec FEVG réduite : traitement médical optimal seul ou avec DAI.", notice: "Notice d'information et consentement v2.4 (fictive)",
+    rules: [
+      { id: "PRO-R01", label: "Antécédent d'infarctus du myocarde", src: "§5.1", test: p => yn(p.idm) },
+      { id: "PRO-R02", label: "FEVG réduite (seuil fictif : 35 % ou moins)", src: "§5.1", test: p => p.fevg === null ? U : p.fevg <= 35 },
+      { id: "PRO-R03", label: "Avant l'implantation (la randomisation porte sur le DAI)", src: "§6.1", test: p => p.moment === "decision" }
+    ] },
+  { id: "HERO", name: "HERO", kind: "Essai randomisé", desc: "Télésurveillance HeartLogic contre suivi classique chez l'insuffisant cardiaque.", notice: "Notice d'information et consentement v1.2 (fictive)",
+    rules: [
+      { id: "HERO-R01", label: "Insuffisance cardiaque", src: "§5.1", test: p => yn(p.ic) },
+      { id: "HERO-R02", label: "DAI ou CRT-D équipé de l'algorithme HeartLogic", src: "§5.1", test: p => p.device === "none" ? U : (["tv", "crtd"].includes(p.device) ? yn(p.hl) : F) },
+      { id: "HERO-R03", label: "Après l'implantation", src: "§6.1", test: p => p.moment === "implante" }
+    ] },
+  { id: "HLOGIC", name: "HEARTLOGIC", kind: "Étude nationale", desc: "Suivi des insuffisants cardiaques porteurs d'un dispositif avec HeartLogic.", notice: "Notice d'information patient v1.0 (fictive)",
+    rules: [
+      { id: "HL-R01", label: "Insuffisance cardiaque", src: "§4.1", test: p => yn(p.ic) },
+      { id: "HL-R02", label: "Dispositif équipé de l'algorithme HeartLogic", src: "§4.1", test: p => p.device === "none" ? U : (["tv", "crtd"].includes(p.device) ? yn(p.hl) : F) },
+      { id: "HL-R03", label: "Après l'implantation", src: "§5.1", test: p => p.moment === "implante" }
+    ] }
+];
+const CONFLICTS = [
+  { id: "CO-01", a: "HERO", b: "HLOGIC", text: "HERO et HEARTLOGIC ne peuvent pas être cumulées : choisir une seule étude (règle fictive de co-inclusion)." },
+  { id: "CO-02", a: "DILEMMA", b: "PROFID", text: "DILEMMA et PROFID EHRA randomisent toutes deux l'implantation du DAI : une seule randomisation possible (règle fictive)." }
+];
+const SUIVI_RULES = [
+  { id: "SUI-R01", study: "Toutes", label: "Aucune transmission de télécardiologie depuis plus de 90 jours (critique au-delà de 180)", src: "Plan de suivi §3" },
+  { id: "SUI-R02", study: "Toutes", label: "Changement de dispositif vu en télécardiologie mais non documenté dans l'étude", src: "Plan de suivi §4" },
+  { id: "SUI-R03", study: "Toutes", label: "Statut vital non confirmé depuis plus de 12 mois", src: "Plan de suivi §5" },
+  { id: "SUI-R04", study: "Toutes", label: "Visite annuelle de suivi dépassée de plus de 30 jours", src: "Plan de suivi §2" },
+  { id: "SUI-R05", study: "Toutes", label: "Événement de télécardiologie (choc) sans dossier d'adjudication ouvert après 15 jours", src: "Charte d'adjudication §2" }
+];
+const STUDY_BY = Object.fromEntries(STUDIES.map(s => [s.id, s]));
+
+/* ---------- Cas fictifs ---------- */
+const SCENARIOS = [
+  { label: "74 ans, ischémique, avant DAI", p: { age: 74, moment: "decision", device: "none", prev: "primaire", fevg: 30, idm: "oui", ic: "oui", fallot: "non", hl: "non", tele: "" } },
+  { label: "38 ans, Fallot, DAI sous-cutané", p: { age: 38, moment: "implante", device: "sicd", prev: "primaire", fevg: 50, idm: "non", ic: "non", fallot: "oui", hl: "non", tele: "oui" } },
+  { label: "66 ans, CRT-D HeartLogic", p: { age: 66, moment: "implante", device: "crtd", prev: "primaire", fevg: 28, idm: "non", ic: "oui", fallot: "non", hl: "oui", tele: "oui" } },
+  { label: "81 ans, Micra AV", p: { age: 81, moment: "implante", device: "micra_av", prev: "na", fevg: 55, idm: "non", ic: "non", fallot: "non", hl: "non", tele: "oui" } }
+];
+
+/* ---------- Clarifications (fictives) ---------- */
+let CLARS = [
+  { id: "CL-004", study: "HONEST", rules: ["HON-R01"], q: "Un patient explanté puis réimplanté d'un DAI sous-cutané reste-t-il dans la cohorte ?", a: "Oui. Le patient garde son numéro d'inclusion ; la réimplantation est saisie comme un changement de dispositif, sans nouvelle inclusion.", date: "2026-03-12", asks: 9 },
+  { id: "CL-007", study: "DAIPP", rules: ["DAIPP-R03"], q: "La télécardiologie est activée quelques jours après la sortie : peut-on inclure le patient ?", a: "Oui, si l'activation a lieu dans les 30 jours suivant l'implantation. La date d'activation est à saisir.", date: "2026-04-02", asks: 14 },
+  { id: "CL-009", study: "DILEMMA", rules: ["DIL-R01"], q: "L'âge s'apprécie-t-il à la date de la décision médicale ou à la date de randomisation ?", a: "À la date de randomisation.", date: "2026-05-20", asks: 6 },
+  { id: "CL-011", study: "AVCESAR", rules: ["AVC-R01"], q: "Un pacemaker sans sonde Micra VR est-il éligible ?", a: "Non. Seul le Micra AV est concerné par AV-CESAR.", date: "2026-06-03", asks: 4 },
+  { id: "CL-012", study: "Toutes", rules: ["SUI-R02"], q: "Comment documenter un changement de boîtier pour usure de pile ?", a: "Saisir un événement « Changement de dispositif » avec la date et le nouveau modèle ; joindre le compte rendu opératoire anonymisé.", date: "2026-06-18", asks: 17 },
+  { id: "CL-015", study: "HERO", rules: ["HERO-R02"], q: "Le patient désactive la télésurveillance après la randomisation : doit-on le sortir de l'étude ?", a: "Non. Le patient reste analysé dans son bras (intention de traiter). Signaler l'écart et tenter de rétablir la transmission.", date: "2026-07-08", asks: 3 },
+  { id: "CL-018", study: "T4F", rules: ["T4F-R02"], q: "Un patient Fallot porteur d'un DAI depuis cinq ans peut-il être inclus ?", a: "Oui. L'ancienneté du DAI n'est pas un critère ; les données antérieures sont recueillies rétrospectivement.", date: "2026-09-01", asks: 5 },
+  { id: "CL-021", study: "PROFID", rules: ["PRO-R02"], q: "Quelle FEVG retenir si deux échographies récentes donnent des valeurs différentes ?", a: "La plus récente avant la randomisation, mesurée selon la méthode décrite au protocole.", date: "2026-10-14", asks: 8 }
+];
+try { const extra = JSON.parse(localStorage.getItem("kairos-clars") || "[]"); if (Array.isArray(extra)) CLARS = extra.concat(CLARS); } catch (e) {}
+
+/* ---------- Suivi (patients fictifs) ---------- */
+const CENTRES = { A: "Centre fictif A (CHU)", B: "Centre fictif B (CH)", C: "Centre fictif C (privé)" };
+const PATIENTS = [
+  ["P-0142", "A", "DAIPP", 212, null], ["P-0157", "A", "HONEST", 96, "SUI-R02"], ["P-0163", "A", "DAIPP", 12, "SUI-R05"], ["P-0171", "A", "HERO", 3, null],
+  ["P-0188", "A", "DAIPP", 5, "SUI-R03"], ["P-0204", "B", "AVCESAR", 140, null], ["P-0211", "B", "DAIPP", 8, "SUI-R04"], ["P-0219", "B", "HONEST", 2, null],
+  ["P-0225", "B", "DAIPP", 33, "SUI-R02"], ["P-0236", "B", "T4F", 101, "SUI-R03"], ["P-0241", "C", "FOREVER", 4, null], ["P-0256", "C", "DAIPP", 190, "SUI-R03"],
+  ["P-0263", "C", "HERO", 9, "SUI-R05"], ["P-0270", "C", "DAIPP", 1, null], ["P-0284", "C", "HONEST", 45, "SUI-R04"]
+];
+const ACTIONS = {
+  "SUI-R01": "Appeler le patient ou son cardiologue traitant ; vérifier le transmetteur à domicile.",
+  "SUI-R02": "Saisir le changement de dispositif (date, nouveau modèle) dans l'étude.",
+  "SUI-R03": "Confirmer le statut vital (dernier contact, médecin traitant).",
+  "SUI-R04": "Planifier la visite annuelle et prévenir l'investigateur.",
+  "SUI-R05": "Ouvrir le dossier d'adjudication : tracés, contexte clinique, traitement."
+};
+const SIGNALS = {
+  "SUI-R02": "Nouveau boîtier détecté en télécardiologie",
+  "SUI-R03": "Statut vital non confirmé depuis plus de 12 mois",
+  "SUI-R04": "Visite annuelle dépassée",
+  "SUI-R05": "Choc délivré, dossier d'adjudication non ouvert"
+};
+function buildSignals() {
+  const out = [];
+  PATIENTS.forEach(([code, centre, study, days, flag]) => {
+    if (days > 90) out.push({ code, centre, study, rule: "SUI-R01", sev: days > 180 ? "crit" : "warn", text: `Aucune transmission depuis ${days} jours` });
+    if (flag) out.push({ code, centre, study, rule: flag, sev: flag === "SUI-R05" || flag === "SUI-R02" ? "crit" : "warn", text: SIGNALS[flag] });
+  });
+  return out.sort((x, y) => (x.sev === y.sev ? 0 : x.sev === "crit" ? -1 : 1) || x.centre.localeCompare(y.centre));
+}
+const SIG = buildSignals();
+const doneSet = new Set();
+
+/* ---------- Inclusion ---------- */
+const FIELDS = { age: "p-age", moment: "p-moment", device: "p-device", prev: "p-prev", fevg: "p-fevg", idm: "p-idm", ic: "p-ic", fallot: "p-fallot", hl: "p-hl", tele: "p-tele" };
+let activeScenario = 0;
+function readPatient() {
+  const p = {}; Object.entries(FIELDS).forEach(([k, id]) => p[k] = $("#" + id).value);
+  p.age = p.age === "" ? null : Number(p.age); p.fevg = p.fevg === "" ? null : Number(p.fevg);
+  return p;
+}
+function setPatient(p) { Object.entries(FIELDS).forEach(([k, id]) => { $("#" + id).value = p[k] === null || p[k] === undefined ? "" : String(p[k]); }); }
+function evaluate(p) {
+  return STUDIES.map(s => {
+    const res = s.rules.map(r => ({ r, v: r.test(p) }));
+    const status = res.some(x => x.v === F) ? "crit" : res.some(x => x.v === U) ? "warn" : "ok";
+    return { s, res, status };
+  });
+}
+function renderScenarios() {
+  $("#scenarios").innerHTML = SCENARIOS.map((sc, i) => `<button class="btn" type="button" data-sc="${i}" aria-pressed="${i === activeScenario}">${esc(sc.label)}</button>`).join("");
+  document.querySelectorAll("[data-sc]").forEach(b => b.addEventListener("click", () => { activeScenario = Number(b.dataset.sc); setPatient(SCENARIOS[activeScenario].p); renderScenarios(); renderResults(); }));
+}
+function clarsFor(ruleIds) { return CLARS.filter(c => c.rules.some(r => ruleIds.includes(r))); }
+function renderResults() {
+  const p = readPatient();
+  const ev = evaluate(p);
+  const ok = ev.filter(e => e.status === "ok"), warn = ev.filter(e => e.status === "warn"), no = ev.filter(e => e.status === "crit");
+  const okIds = new Set(ok.map(e => e.s.id));
+  const conflicts = CONFLICTS.filter(c => okIds.has(c.a) && okIds.has(c.b));
+  let h = `<div class="summary">
+    <div class="s"><span class="v" style="color:var(--ok)">${ok.length}</span><span class="l">Éligible(s)</span></div>
+    <div class="s"><span class="v" style="color:var(--warn)">${warn.length}</span><span class="l">À vérifier</span></div>
+    <div class="s"><span class="v">${no.length}</span><span class="l">Non concernée(s)</span></div></div>`;
+  conflicts.forEach(c => { h += `<div class="alert crit"><strong>Co-inclusion impossible <span class="rid">${c.id}</span></strong><span>${esc(c.text)}</span><span class="small">Décision de l'investigateur requise avant toute inclusion.</span></div>`; });
+  if (p.moment === "decision" && (ok.some(e => e.s.kind === "Essai randomisé") || warn.some(e => e.s.kind === "Essai randomisé")))
+    h += `<div class="alert info"><strong>À faire avant l'implantation</strong><span>Un essai randomisé porte sur la décision d'implanter : la proposition doit être faite avant le geste.</span></div>`;
+  if (!ok.length && !warn.length) h += `<div class="alert warn"><strong>Aucune étude du réseau ne correspond</strong><span>Vérifiez le dispositif et l'indication saisis.</span></div>`;
+  [...ok, ...warn, ...no].forEach(e => {
+    const pill = e.status === "ok" ? '<span class="pill ok">Éligible</span>' : e.status === "warn" ? '<span class="pill warn">À vérifier</span>' : '<span class="pill neutral">Non concernée</span>';
+    const missing = e.res.filter(x => x.v === U).map(x => x.r.label);
+    const related = clarsFor(e.s.rules.map(r => r.id));
+    h += `<details class="study ${e.status}" ${e.status !== "crit" ? "open" : ""}>
+      <summary><span><span class="name">${esc(e.s.name)}</span> <span class="small muted">· ${esc(e.s.kind)}</span></span>${pill}<span class="desc">${esc(e.s.desc)}</span></summary>
+      <div class="body"><ul class="crits">${e.res.map(x => `<li><span class="mark ${x.v === T ? "t" : x.v === F ? "f" : "u"}" aria-label="${x.v === T ? "rempli" : x.v === F ? "non rempli" : "à vérifier"}">${x.v === T ? "✓" : x.v === F ? "✗" : "?"}</span>
+        <span>${esc(x.r.label)} <span class="rid">${x.r.id}</span><br><span class="src">Source fictive : protocole ${esc(e.s.name)}, ${esc(x.r.src)} · règle validée</span></span></li>`).join("")}</ul>
+      ${e.status === "ok" ? `<div class="actions"><strong>Actions</strong><span>1. Remettre la <strong>${esc(e.s.notice)}</strong> (version en vigueur pour ce centre).</span><span>2. Recueillir ${e.s.kind === "Essai randomisé" ? "le consentement écrit" : "la non-opposition"} et le tracer.</span><span>3. Saisir l'inclusion ; l'investigateur valide.</span></div>` : ""}
+      ${e.status === "warn" ? `<div class="actions"><strong>Information manquante</strong>${missing.map(m => `<span>• ${esc(m)}</span>`).join("")}</div>` : ""}
+      ${related.length && e.status !== "crit" ? related.map(c => `<div class="clar-link">Clarification liée : « ${esc(c.q)} » <button type="button" data-goclar="${c.id}">Voir ${c.id}</button></div>`).join("") : ""}
+      </div></details>`;
+  });
+  $("#results").innerHTML = h;
+  document.querySelectorAll("[data-goclar]").forEach(b => b.addEventListener("click", () => openClar(b.dataset.goclar)));
+}
+
+/* ---------- Clarifications ---------- */
+let clarFilter = "Toutes-études", highlight = null;
+const STOP = new Set("le la les un une des de du d l à a au aux et ou est il elle on en pour par dans sur avec sans que qui quoi peut peuvent doit doivent ce cet cette ces se sa son ses leur leurs ne pas plus y t s qu".split(" "));
+function words(s) { return new Set(String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]+/g, " ").split(" ").filter(w => w.length > 2 && !STOP.has(w))); }
+function similarity(a, b) { const A = words(a), B = words(b); if (!A.size || !B.size) return 0; let n = 0; A.forEach(w => { if (B.has(w) || [...B].some(x => x.length > 4 && w.length > 4 && (x.startsWith(w.slice(0, 5)) || w.startsWith(x.slice(0, 5))))) n++; }); return n / Math.min(A.size, B.size); }
+function studyName(id) { return id === "Toutes" ? "Toutes les études" : (STUDY_BY[id]?.name || id); }
+function renderClarFilters() {
+  const ids = ["Toutes-études", "Toutes", ...STUDIES.map(s => s.id)];
+  $("#c-filter").innerHTML = ids.map(i => `<button class="btn" type="button" data-cf="${i}" aria-pressed="${clarFilter === i}">${i === "Toutes-études" ? "Tout" : esc(i === "Toutes" ? "Transverses" : STUDY_BY[i].name)}</button>`).join("");
+  document.querySelectorAll("[data-cf]").forEach(b => b.addEventListener("click", () => { clarFilter = b.dataset.cf; renderClarFilters(); renderClars(); }));
+}
+function renderClars() {
+  const q = $("#c-search").value.trim();
+  let list = CLARS.filter(c => clarFilter === "Toutes-études" || c.study === clarFilter);
+  if (q) list = list.filter(c => (c.q + " " + c.a + " " + c.id).toLowerCase().includes(q.toLowerCase()) || similarity(q, c.q + " " + c.a) >= 0.5);
+  $("#c-list").innerHTML = list.length ? list.map(c => `<article class="clar ${highlight === c.id ? "hl" : ""}" id="clar-${c.id}">
+      <div class="meta"><span class="rid">${esc(c.id)}</span><span>${esc(studyName(c.study))}</span>${c.pending ? '<span class="pill warn">En attente de réponse</span>' : `<span class="pill ok">Validée par la coordination</span><span>${esc(new Date(c.date).toLocaleDateString("fr-FR"))}</span>`}</div>
+      <p class="q">${esc(c.q)}</p>
+      ${c.pending ? '<p class="muted small">La coordination a reçu la question. La réponse validée sera publiée ici pour tous les centres.</p>' : `<p>${esc(c.a)}</p>`}
+      <div class="meta">${c.rules.map(r => `<span class="rid">${esc(r)}</span>`).join("")}<span>${c.asks ? `Consultée par ${c.asks} centres` : ""}</span></div>
+    </article>`).join("") : `<p class="muted">Aucune clarification ne correspond.</p>`;
+}
+function openClar(id) {
+  highlight = id; clarFilter = "Toutes-études"; $("#c-search").value = ""; go("clarifications"); renderClarFilters(); renderClars();
+  const el = document.getElementById("clar-" + id); if (el) el.scrollIntoView({ block: "center" });
+}
+function renderMatch() {
+  const t = $("#cq-text").value.trim();
+  const box = $("#cq-match");
+  if (t.length < 12) { box.innerHTML = ""; return; }
+  const scored = CLARS.filter(c => !c.pending).map(c => ({ c, s: similarity(t, c.q) })).filter(x => x.s >= 0.34).sort((a, b) => b.s - a.s).slice(0, 2);
+  box.innerHTML = scored.length ? `<div class="match"><strong>Cette question a peut-être déjà une réponse</strong>${scored.map(x => `<div><span class="rid">${esc(x.c.id)}</span> ${esc(x.c.q)}<br><span class="small">${esc(x.c.a)}</span></div>`).join("")}<span class="small muted">Si la réponse vous suffit, inutile d'envoyer la question.</span></div>` : "";
+}
+function sendQuestion() {
+  const t = $("#cq-text").value.trim(); const msg = $("#cq-msg");
+  if (t.length < 12) { msg.textContent = "Rédigez une question d'au moins quelques mots."; return; }
+  const study = $("#cq-study").value;
+  const id = "CL-" + String(100 + CLARS.filter(c => c.pending).length + 1);
+  const c = { id, study, rules: study === "Toutes" ? [] : [STUDY_BY[study].rules[0].id], q: t, a: "", date: new Date().toISOString().slice(0, 10), asks: 0, pending: true };
+  CLARS.unshift(c);
+  try { localStorage.setItem("kairos-clars", JSON.stringify(CLARS.filter(x => x.pending))); } catch (e) {}
+  $("#cq-text").value = ""; renderMatch();
+  msg.textContent = `Question ${id} envoyée (simulation). Elle apparaît dans la liste, en attente de réponse.`;
+  highlight = id; renderClars();
+}
+
+/* ---------- Suivi ---------- */
+let suiviCentre = "all";
+function renderSuivi() {
+  const open = SIG.filter(s => !doneSet.has(s.code + s.rule));
+  $("#suivi-count").textContent = open.length || "";
+  $("#centres").innerHTML = Object.entries(CENTRES).map(([k, label]) => {
+    const pts = PATIENTS.filter(p => p[1] === k).length;
+    const withIssue = new Set(open.filter(s => s.centre === k).map(s => s.code)).size;
+    const pct = Math.round((pts - withIssue) / pts * 100);
+    const cls = pct >= 80 ? "" : pct >= 60 ? "warn" : "crit";
+    return `<div class="centre"><span class="small muted">${esc(label)}</span><span class="v">${pct} %</span><div class="bar ${cls}"><i style="width:${pct}%"></i></div><span class="small muted">${pts - withIssue} / ${pts} patients complets</span></div>`;
+  }).join("");
+  $("#s-filter").innerHTML = [["all", "Tous les centres"], ...Object.entries(CENTRES).map(([k]) => [k, "Centre " + k])].map(([k, l]) => `<button class="btn" type="button" data-sf="${k}" aria-pressed="${suiviCentre === k}">${l}</button>`).join("");
+  document.querySelectorAll("[data-sf]").forEach(b => b.addEventListener("click", () => { suiviCentre = b.dataset.sf; renderSuivi(); }));
+  const rows = SIG.filter(s => suiviCentre === "all" || s.centre === suiviCentre);
+  $("#s-meta").textContent = `${open.length} action(s) ouverte(s) · ${PATIENTS.length} patients fictifs`;
+  $("#s-body").innerHTML = rows.map(s => {
+    const key = s.code + s.rule, done = doneSet.has(key);
+    return `<tr class="${done ? "done" : ""}"><td class="sev ${s.sev}" aria-label="${s.sev === "crit" ? "Prioritaire" : "À traiter"}"></td>
+      <td class="keep"><input type="checkbox" data-done="${esc(key)}" aria-label="Action faite pour ${esc(s.code)}" ${done ? "checked" : ""}></td>
+      <td class="mono">${esc(s.code)}</td><td>${esc(s.centre)}</td><td>${esc(STUDY_BY[s.study].name)}</td><td>${esc(s.text)}</td>
+      <td><span class="rid">${esc(s.rule)}</span></td><td>${esc(ACTIONS[s.rule])}</td></tr>`;
+  }).join("");
+  document.querySelectorAll("[data-done]").forEach(c => c.addEventListener("change", () => { c.checked ? doneSet.add(c.dataset.done) : doneSet.delete(c.dataset.done); renderSuivi(); }));
+}
+
+/* ---------- Règles ---------- */
+function renderRules() {
+  const rows = [];
+  STUDIES.forEach(s => s.rules.forEach(r => rows.push([r.id, s.name, r.label, `Protocole ${s.name}, ${r.src}`, r.id.endsWith("R03") && s.id === "HERO" ? "pending" : "ok"])));
+  CONFLICTS.forEach(c => rows.push([c.id, "Co-inclusion", c.text, "Charte du réseau §7", "ok"]));
+  SUIVI_RULES.forEach(r => rows.push([r.id, "Suivi (toutes études)", r.label, r.src, "ok"]));
+  $("#r-body").innerHTML = rows.map(([id, st, label, src, v]) => `<tr><td><span class="rid">${esc(id)}</span></td><td>${esc(st)}</td><td>${esc(label)}</td><td class="small">Source fictive : ${esc(src)}</td>
+    <td>${v === "ok" ? '<span class="pill ok">Validée</span><br><span class="small muted">ARC coordination (fictif)</span>' : '<span class="pill warn">À valider</span><br><span class="small muted">Extraite automatiquement</span>'}</td></tr>`).join("");
+}
+
+/* ---------- Navigation ---------- */
+const VIEWS = ["inclusion", "clarifications", "suivi", "regles"];
+let view = "inclusion";
+function go(v) {
+  view = v;
+  VIEWS.forEach(x => { $("#view-" + x).hidden = x !== v; });
+  document.querySelectorAll(".tab").forEach(t => t.dataset.view === v ? t.setAttribute("aria-current", "page") : t.removeAttribute("aria-current"));
+  if (location.hash.slice(1) !== v) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => { highlight = null; go(t.dataset.view); renderClars(); }));
+window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS.includes(v) && v !== view) go(v); });
+
+/* ---------- Démarrage ---------- */
+$("#cq-study").innerHTML = `<option value="Toutes">Toutes les études (question transverse)</option>` + STUDIES.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
+$("#patient-form").addEventListener("input", () => { activeScenario = -1; renderScenarios(); renderResults(); });
+$("#patient-form").addEventListener("change", () => { renderResults(); });
+$("#c-search").addEventListener("input", () => { highlight = null; renderClars(); });
+$("#cq-text").addEventListener("input", renderMatch);
+$("#cq-send").addEventListener("click", sendQuestion);
+setPatient(SCENARIOS[0].p); renderScenarios(); renderResults();
+renderClarFilters(); renderClars(); renderSuivi(); renderRules();
+const h0 = location.hash.slice(1); go(VIEWS.includes(h0) ? h0 : "inclusion");
+})();
+</script>
