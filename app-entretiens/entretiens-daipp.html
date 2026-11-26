@@ -1,0 +1,943 @@
+<title>Entretiens DAI-PP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: app shell — sticky tab bar, one working column (max 920px); interview view stacks sections, synthesis shows one row per hypothesis. */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #eaeef4;
+  --fg: #132033;
+  --muted: #5a6779;
+  --line: #d5dce6;
+  --accent: #2550b8;
+  --accent-soft: #e3eafa;
+  --on-accent: #ffffff;
+  --ok: #1f7a4d;
+  --ok-soft: #e2f3ea;
+  --warn: #9a5b00;
+  --warn-soft: #fbf0dc;
+  --crit: #b4322a;
+  --crit-soft: #fbe5e3;
+  --font-text: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+    --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+    --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+  --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+  --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-text); font-size: 15px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.25; }
+h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.2rem; font-weight: 600; }
+h3 { font-size: 1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-inner { max-width: 960px; margin: 0 auto; padding-block: 10px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 8px; }
+.brand { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.brand .tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.tab[aria-current="page"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--fg); }
+
+main { max-width: 960px; margin: 0 auto; padding-block: 20px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+.view { display: flex; flex-direction: column; gap: 20px; }
+
+.banner { border: 1px solid var(--line); background: var(--surface-2); border-radius: var(--r); padding: 10px 14px; font-size: 0.9rem; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.banner.warn { background: var(--warn-soft); border-color: transparent; color: var(--fg); }
+.banner.info { background: var(--accent-soft); border-color: transparent; }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.92rem; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.danger { color: var(--crit); }
+.btn.ghost { border-color: transparent; background: none; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.spread { justify-content: space-between; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.section-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+
+/* list */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.stat .v { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat .l { font-size: 0.8rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tbody tr.click { cursor: pointer; }
+tbody tr.click:hover td { background: var(--accent-soft); }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.crit { background: var(--crit-soft); color: var(--crit); }
+.pill.neutral { background: var(--surface-2); color: var(--muted); }
+.empty { text-align: center; padding: 36px 18px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.empty p { max-width: 52ch; }
+
+/* form */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field > span, .label { font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 7px 10px;
+}
+textarea { min-height: 64px; resize: vertical; line-height: 1.45; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.check { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; font-size: 0.92rem; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: var(--bg); padding: 6px 12px; cursor: pointer; font-family: var(--font-mono); min-width: 38px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+.editbar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 86px); z-index: 4; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; box-shadow: 0 4px 14px -10px rgba(10,20,40,.35); }
+.code-badge { font-family: var(--font-mono); font-weight: 600; font-size: 1.05rem; }
+.save-state { font-size: 0.82rem; color: var(--muted); }
+.save-state.err { color: var(--crit); }
+.jump { display: flex; gap: 6px; flex-wrap: wrap; }
+.jump a { font-size: 0.8rem; text-decoration: none; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--fg); font-family: var(--font-mono); }
+.jump a:hover { background: var(--accent-soft); }
+
+.block { scroll-margin-top: 170px; }
+.hyp-id { font-family: var(--font-mono); font-weight: 600; color: var(--accent); margin-right: 6px; }
+.q { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.q:first-of-type { border-top: 0; padding-top: 0; }
+.q-text { display: flex; gap: 10px; }
+.q-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); min-width: 2.2em; padding-top: 2px; }
+.q-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.q-body strong { font-weight: 600; }
+.relance { font-size: 0.86rem; color: var(--muted); }
+.q textarea { min-height: 48px; }
+.only { font-size: 0.72rem; font-family: var(--font-mono); color: var(--muted); }
+.eval { background: var(--surface-2); border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.eval-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--muted); }
+.warn-text { font-size: 0.8rem; color: var(--warn); }
+.script { background: var(--surface-2); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 0.92rem; }
+.rank { display: flex; flex-direction: column; gap: 6px; }
+.rank-item { display: flex; gap: 10px; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.rank-pos { font-family: var(--font-mono); font-weight: 600; width: 1.6em; text-align: center; }
+.rank-letter { font-family: var(--font-mono); font-weight: 600; color: var(--accent); width: 1.2em; }
+.rank-text { flex: 1; min-width: 0; font-size: 0.9rem; }
+.rank-btns { display: flex; gap: 4px; }
+.rank-btns button { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; width: 30px; height: 28px; cursor: pointer; }
+.rank-btns button:disabled { opacity: 0.35; cursor: default; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--crit-soft); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+
+/* synthesis */
+.hyp-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr); gap: 16px; }
+@media (max-width: 680px) { .hyp-row { grid-template-columns: 1fr; } }
+.crit-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 420px) { .crit-list { grid-template-columns: 1fr; } }
+.crit { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; background: var(--bg); }
+.crit.met { border-color: var(--ok); }
+.crit .ck { font-size: 0.75rem; font-weight: 600; }
+.crit.met .ck { color: var(--ok); }
+.crit.unmet .ck { color: var(--muted); }
+.crit .cv { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.crit .cl { font-size: 0.78rem; color: var(--muted); }
+.verdict { font-weight: 600; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.progress-list { display: flex; flex-direction: column; gap: 10px; }
+.progress-item { display: grid; grid-template-columns: minmax(0, 1fr) 60px; gap: 4px 12px; align-items: center; }
+.progress-item .bar { grid-column: 1 / -1; }
+.decision { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; display: flex; flex-direction: column; gap: 6px; }
+ul.clean { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+pre.copy { white-space: pre-wrap; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px; font-family: var(--font-text); font-size: 0.9rem; margin: 0; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>Entretiens DAI-PP</h1>
+      <span class="tag">Validation · KAIROS Rythme</span>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab" data-view="entretiens" type="button">Entretiens</button>
+      <button class="tab" data-view="synthese" type="button">Synthèse</button>
+      <button class="tab" data-view="preparation" type="button">Préparation</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+  <div id="status-banner" class="banner info">Connexion à l'enregistrement…</div>
+  <div id="demo-banner" class="banner warn" hidden>
+    <span><strong>Démonstration :</strong> entretiens fictifs, rien n'est enregistré.</span>
+    <button class="btn" id="exit-demo" type="button">Quitter la démonstration</button>
+  </div>
+  <section class="view" id="view-entretiens"></section>
+  <section class="view" id="view-entretien" hidden></section>
+  <section class="view" id="view-synthese" hidden></section>
+  <section class="view" id="view-preparation" hidden></section>
+</main>
+
+<script>
+(function () {
+"use strict";
+
+/* ---------- Référentiel issu du guide ---------- */
+const PROFILES = {
+  arc_multi: { label: "ARC / TEC, centre multi-études (5 ou plus)", short: "ARC multi-études", target: 4 },
+  arc_peu:   { label: "ARC / TEC, centre 1 à 2 études", short: "ARC 1–2 études", target: 2 },
+  telecardio:{ label: "Infirmier(e) / technicien(ne) de télécardiologie", short: "Télécardiologie", target: 3 },
+  rythmo:    { label: "Cardiologue rythmologue investigateur", short: "Rythmologue", target: 2 },
+  coord:     { label: "Équipe de coordination", short: "Coordination", target: 2 },
+  adjud:     { label: "Membre du comité d'adjudication", short: "Adjudication", target: 1 }
+};
+const ARC = ["arc_multi", "arc_peu"];
+
+const HYPS = [
+  { id: "H1", letter: "A", module: "Mémoire et clarifications partagées",
+    title: "Questions sur les protocoles et transmission",
+    problem: "Retrouver la réponse à une question sur un protocole, ou transmettre ce qu'on sait quand on change d'équipe.",
+    profiles: [...ARC, "coord"], key: "Questions d'interprétation par mois" },
+  { id: "H2", letter: "B", module: "Routeur d'inclusion",
+    title: "Inclusion à l'implantation",
+    problem: "Ne pas rater l'inclusion d'un patient implanté dans la bonne étude, avec la bonne notice.",
+    profiles: [...ARC, "rythmo"], key: "Inclusions manquées estimées par trimestre" },
+  { id: "H3", letter: "C", module: "Complétude sur 10 ans",
+    title: "Complétude du suivi au long cours",
+    problem: "Garder un suivi complet des patients sur des années (transmissions, changements de dispositif, statut vital).",
+    profiles: [...ARC, "telecardio", "coord"], key: "Délai pour repérer un patient silencieux (jours)" },
+  { id: "H4", letter: "D", module: "Télécardiologie → adjudication",
+    title: "De l'alerte de télécardiologie à l'événement d'étude",
+    problem: "Transformer les alertes de télécardiologie en événements d'étude et en dossiers d'adjudication.",
+    profiles: [...ARC, "telecardio", "rythmo", "adjud"], key: "Minutes par événement, de l'alerte au dossier" },
+  { id: "H5", letter: "E", module: "KAIROS pour les essais randomisés",
+    title: "Essais randomisés (DILEMMA, PROFID EHRA, HERO)",
+    problem: "Respecter les fenêtres de visite et appliquer correctement les amendements dans les essais randomisés.",
+    profiles: [...ARC], needsTrial: true, key: "Visites hors fenêtre au dernier trimestre" }
+];
+const HYP_BY_LETTER = Object.fromEntries(HYPS.map(h => [h.letter, h]));
+
+const BLOCKS = [
+  { id: "contexte", title: "Contexte", time: "5–10 min" },
+  { id: "semaine", title: "Journée et semaine type", time: "10–20 min" },
+  ...HYPS.map(h => ({ id: h.id, title: h.title, hyp: h }))
+];
+
+const Q = [
+  { n: 1, b: "contexte", p: true, t: "Pouvez-vous décrire votre rôle et la part de votre temps consacrée aux études DAI-PP ?" },
+  { n: 2, b: "contexte", t: "Sur combien d'études du réseau travaillez-vous en ce moment ? Et hors réseau ?" },
+  { n: 3, b: "contexte", p: true, t: "Quels outils utilisez-vous au quotidien pour ces études ?", r: "Combien d'identifiants différents ? Lequel vous fait perdre le plus de temps ?" },
+  { n: 4, b: "contexte", t: "Depuis quand êtes-vous sur ces études ? Comment s'est passée votre prise de poste ?" },
+  { n: 5, b: "semaine", p: true, t: "Racontez-moi votre dernière semaine sur les études du réseau. Qu'avez-vous fait, dans l'ordre ?" },
+  { n: 6, b: "semaine", p: true, t: "Quelle tâche vous a pris le plus de temps cette semaine-là ? Combien d'heures environ ?" },
+  { n: 7, b: "semaine", t: "Qu'est-ce qui vous inquiète le plus, la crainte d'avoir oublié quelque chose ?", r: "Racontez la dernière fois où vous vous êtes rendu compte d'un oubli. Comment ? Quelles conséquences ?" },
+  { n: 8, b: "semaine", t: "Avez-vous créé vos propres outils (tableau, check-list, rappels) ? Pouvez-vous me le décrire ?", r: "Demander une capture sans données de patients si possible." },
+  { n: 9, b: "H1", p: true, t: "Quelle est la dernière question que vous avez posée (ou reçue) sur l'interprétation d'un protocole du réseau ?", r: "À qui ? Par quel canal ? Combien de temps pour avoir la réponse ? Où est-elle conservée aujourd'hui ?" },
+  { n: 10, b: "H1", t: "Combien de questions de ce type par mois, à peu près ?" },
+  { n: 11, b: "H1", t: "Vous est-il arrivé de vous reposer une question déjà résolue, par vous ou par un collègue ?" },
+  { n: 12, b: "H1", p: true, t: "Quand quelqu'un quitte l'équipe, qu'est-ce qui se perd ? Racontez la dernière passation." },
+  { n: 13, b: "H1", only: ["coord"], t: "Quelles sont les questions qui reviennent le plus de la part des centres ? Combien de temps par semaine y consacrez-vous ?" },
+  { n: 14, b: "H1", only: ["coord"], t: "Comment diffusez-vous une réponse valable pour tous les centres aujourd'hui ?" },
+  { n: 15, b: "H2", p: true, t: "Comment savez-vous aujourd'hui qu'un patient qui vient d'être implanté doit entrer dans une étude du réseau ?", r: "Qui repère ? À quel moment ? Avec quelle information (programme opératoire, compte rendu, discussion) ?" },
+  { n: 16, b: "H2", p: true, t: "Racontez la dernière fois qu'un patient éligible n'a pas été inclus, ou a été inclus tardivement. Pourquoi ?" },
+  { n: 17, b: "H2", t: "Combien d'inclusions manquées par trimestre, à votre avis ? Sur quelle base l'estimez-vous ?" },
+  { n: 18, b: "H2", t: "Vous est-il arrivé d'utiliser une notice d'information dans une version périmée, ou la notice d'une autre étude ?" },
+  { n: 19, b: "H2", t: "Comment gérez-vous un patient potentiellement concerné par plusieurs études du réseau ?" },
+  { n: 20, b: "H2", only: ["rythmo"], t: "Au moment de l'implantation, quelle information sur les études aimeriez-vous avoir sous les yeux ? Sous quelle forme ?" },
+  { n: 21, b: "H3", p: true, t: "Comment savez-vous aujourd'hui qu'un patient de la cohorte « manque » des données ?" },
+  { n: 22, b: "H3", p: true, t: "Racontez le dernier patient perdu de vue ou devenu silencieux en télésurveillance.", r: "Comment l'avez-vous repéré, au bout de combien de temps, qu'avez-vous fait ?" },
+  { n: 23, b: "H3", t: "Comment sont documentés les changements de dispositif (changement de boîtier, explantation, changement de type de dispositif) ?", r: "Combien de temps entre l'événement et sa saisie dans l'étude ?" },
+  { n: 24, b: "H3", t: "Comment obtenez-vous le statut vital des patients qui ne sont plus suivis dans votre centre ?" },
+  { n: 25, b: "H3", only: ["coord"], t: "Quel est aujourd'hui le taux de complétude, ou le taux de données manquantes, qui vous préoccupe le plus ? Comment le mesurez-vous ?" },
+  { n: 26, b: "H3", t: "Combien de temps par mois consacrez-vous à relancer, compléter ou corriger ?" },
+  { n: 27, b: "H4", p: true, t: "Décrivez pas à pas ce qui se passe entre une transmission montrant un choc (ou une thérapie) et son enregistrement comme événement dans l'étude.", r: "Qui voit l'alerte ? Sur quelle plateforme ? Qui décide que c'est un événement d'étude ? Comment les tracés sont-ils récupérés ? Sous quel format ? Combien de clics, de copies, d'exports ?" },
+  { n: 28, b: "H4", p: true, t: "Combien de temps cela prend-il pour un événement, du début à la fin ? Et entre l'événement et sa saisie ?" },
+  { n: 29, b: "H4", t: "Combien de plateformes de fabricants différentes utilisez-vous ? Lesquelles posent le plus de difficultés pour récupérer les informations ?" },
+  { n: 30, b: "H4", t: "Racontez un événement qui a été saisi en retard, saisi deux fois, ou qui a échappé à l'étude." },
+  { n: 31, b: "H4", p: true, only: ["adjud"], t: "Quelle proportion des dossiers reçus sont incomplets ? Qu'est-ce qui manque le plus souvent ?" },
+  { n: 32, b: "H4", only: ["adjud"], t: "Combien de temps passez-vous par dossier ? Qu'est-ce qui vous ferait gagner le plus de temps ?" },
+  { n: 33, b: "H4", only: ["adjud"], t: "Les dossiers sont-ils présentés de la même façon d'un centre à l'autre ?" },
+  { n: 34, b: "H4", t: "Que penseriez-vous d'une pré-classification indicative des événements (appropriés ou inappropriés), toujours tranchée par un humain ?", r: "À poser seulement en fin de bloc, pour recueillir réticences et conditions de confiance." },
+  { n: 35, b: "H5", p: true, t: "Racontez la dernière fois qu'une visite est sortie de sa fenêtre, ou qu'un examen prévu a été oublié." },
+  { n: 36, b: "H5", t: "Comment avez-vous mis en œuvre le dernier amendement ? Combien de temps ? Qu'est-ce qui a été le plus pénible ?" },
+  { n: 37, b: "H5", t: "Avez-vous eu des patients à re-consentir ? Comment les avez-vous identifiés ?" },
+  { n: 38, b: "H5", t: "Comment calculez-vous les dates des prochaines visites aujourd'hui ?" }
+];
+
+const CENTRE_TYPES = { CHU: "CHU", CH: "Centre hospitalier", prive: "Clinique / hôpital privé" };
+const STATUTS = { planifie: "Planifié", realise: "Réalisé", annule: "Annulé" };
+const OPENING = "« Merci de prendre ce temps. L'objectif est de comprendre comment se passe concrètement votre travail sur les études du réseau, ce qui marche, ce qui coince. Il n'y a pas de bonne ou de mauvaise réponse, et ce n'est pas une évaluation de votre centre. Je ne note aucune donnée de patient ; si vous en citez par réflexe, je ne la noterai pas. Vos réponses seront anonymisées : je mettrai un code, pas votre nom. Êtes-vous d'accord pour que je prenne des notes ? »";
+const INVITATION = `Objet : 45 minutes pour améliorer le quotidien des équipes du réseau DAI-PP ?
+
+Bonjour [Prénom],
+
+Je suis [fonction] au sein du réseau DAI-PP. Avec l'accord de [responsable], je mène une série d'entretiens auprès des équipes des centres pour comprendre ce qui vous fait perdre du temps ou vous inquiète dans le suivi des études du réseau : inclusions, télécardiologie, suivi au long cours, questions sur les protocoles…
+
+Ce n'est ni un audit ni une évaluation de votre centre. Les échanges sont anonymisés et aucune donnée de patient n'est demandée.
+
+Auriez-vous 45 minutes, en visio ou par téléphone, dans les trois prochaines semaines ? Voici quelques créneaux : […]
+
+Merci d'avance,
+[Signature]`;
+
+/* ---------- État ---------- */
+const state = {
+  view: "entretiens",
+  items: new Map(),      // id -> interview
+  loaded: false,
+  backend: "pending",    // "db" | "local" | "pending"
+  readOnly: false,
+  demo: false,
+  editingId: null,
+  confirmDelete: false,
+  saveState: "",
+  saveErr: false
+};
+let db = null, downloads = null;
+let saveTimer = null, saving = false, pendingSave = false;
+
+/* ---------- Utilitaires ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function num(v) { if (v === "" || v === null || v === undefined) return null; const n = Number(v); return Number.isFinite(n) ? n : null; }
+function mean(a) { return a.length ? a.reduce((s, x) => s + x, 0) / a.length : null; }
+function median(a) { if (!a.length) return null; const s = [...a].sort((x, y) => x - y); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+function fmt(n, d = 1) { return n === null || n === undefined ? "—" : (Math.round(n * 10 ** d) / 10 ** d).toLocaleString("fr-FR"); }
+function today() { const d = new Date(); return d.toISOString().slice(0, 10); }
+function fmtDate(s) { if (!s) return "—"; const [y, m, d] = s.split("-"); return d && m && y ? `${d}/${m}/${y}` : s; }
+function newId() { return "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+const PATIENT_RE = /\b\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4}\b|\b\d{7,}\b|\bn[ée]e?\s+le\b|\bIPP\b|\bNIP\b/i;
+
+function blankHyp() { return { exemple: false, intensite: null, heures: null, contournements: null, impact: false, chiffre: null, preuves: "" }; }
+function blankInterview(code) {
+  const h = {}; HYPS.forEach(x => h[x.id] = blankHyp());
+  return {
+    code, date: today(), duree: null, statut: "planifie", profil: "", typeCentre: "", region: "",
+    nbEtudes: null, anciennete: null, essai: false, outils: "", notes: {}, h,
+    classement: HYPS.map(x => x.letter), classementFait: false, gain: null,
+    citation: "", surprise: "", nouveau: "", testeur: "", recommandations: "",
+    createdAt: Date.now(), updatedAt: Date.now()
+  };
+}
+function normalize(d) {
+  const b = blankInterview(d.code || "E??");
+  const out = Object.assign(b, d);
+  out.h = Object.assign({}, b.h);
+  HYPS.forEach(x => { out.h[x.id] = Object.assign(blankHyp(), (d.h || {})[x.id] || {}); });
+  out.notes = Object.assign({}, d.notes || {});
+  if (!Array.isArray(out.classement) || out.classement.length !== 5) out.classement = HYPS.map(x => x.letter);
+  return out;
+}
+function nextCode() {
+  let max = 0;
+  state.items.forEach(it => { const m = /^E(\d+)$/.exec(it.code || ""); if (m) max = Math.max(max, Number(m[1])); });
+  return "E" + String(max + 1).padStart(2, "0");
+}
+function applicable(it, hyp) {
+  if (!it.profil || !hyp.profiles.includes(it.profil)) return false;
+  if (hyp.needsTrial && !it.essai) return false;
+  return true;
+}
+function sortedItems() {
+  return [...state.items.entries()].sort((a, b) => (a[1].code || "").localeCompare(b[1].code || "", "fr", { numeric: true }));
+}
+
+/* ---------- Stockage ---------- */
+const LOCAL_KEY = "daipp-entretiens-v1";
+function localLoad() { try { const raw = localStorage.getItem(LOCAL_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; } }
+function localWrite(obj) { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(obj)); return true; } catch (e) { return false; } }
+
+async function persist(id) {
+  const it = state.items.get(id); if (!it || state.demo) return;
+  it.updatedAt = Date.now();
+  if (state.backend === "db") {
+    await db.collection("entretiens").doc(id).set(JSON.parse(JSON.stringify(it)));
+  } else {
+    const all = localLoad(); all[id] = it;
+    if (!localWrite(all)) throw { code: "local", message: "Stockage du navigateur indisponible" };
+  }
+}
+async function removeItem(id) {
+  if (state.demo) { state.items.delete(id); return; }
+  state.items.delete(id);
+  if (state.backend === "db") await db.collection("entretiens").doc(id).delete();
+  else { const all = localLoad(); delete all[id]; localWrite(all); }
+}
+function scheduleSave() {
+  if (state.demo || state.readOnly) return;
+  state.saveState = "Modifications en attente…"; state.saveErr = false; paintSave();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flushSave, 900);
+}
+async function flushSave() {
+  clearTimeout(saveTimer);
+  const id = state.editingId; if (!id) return;
+  if (saving) { pendingSave = true; return; }
+  saving = true;
+  try {
+    await persist(id);
+    state.saveState = "Enregistré à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); state.saveErr = false;
+  } catch (e) {
+    if (e && e.code === "invalid_argument") { state.readOnly = true; state.saveState = "Lecture seule : vous ne pouvez pas modifier ces fiches."; }
+    else if (e && e.code === "quota_exceeded") state.saveState = "Espace plein : supprimez des fiches inutiles, puis réessayez.";
+    else state.saveState = "Échec de l'enregistrement. Vérifiez la connexion ; la saisie sera renvoyée à la prochaine modification.";
+    state.saveErr = true;
+  } finally {
+    saving = false; paintSave();
+    if (pendingSave) { pendingSave = false; flushSave(); }
+  }
+}
+function paintSave() {
+  const el = $("#save-state"); if (!el) return;
+  el.textContent = state.demo ? "Démonstration : non enregistré" : (state.readOnly ? "Lecture seule" : state.saveState);
+  el.classList.toggle("err", state.saveErr);
+}
+
+async function init() {
+  render();
+  let loadTimer = setTimeout(() => {
+    if (!state.loaded) setBanner("warn", "L'enregistrement ne répond pas encore. Les fiches s'afficheront dès que la connexion sera rétablie.");
+  }, 10000);
+  let api = null;
+  try { api = window.claude && typeof window.claude.use === "function" ? window.claude : null; } catch (e) { api = null; }
+  if (api) {
+    try { db = await api.use("db"); } catch (e) { db = null; }
+    try { downloads = await api.use("downloads"); } catch (e) { downloads = null; }
+    try {
+      const user = await api.use("user");
+      if (user) { const ok = await user.canEdit(); if (ok === false) state.readOnly = true; }
+    } catch (e) {}
+  }
+  if (db) {
+    state.backend = "db";
+    db.collection("entretiens").onSnapshot(snap => {
+      if (!snap.metadata.fromCache) { clearTimeout(loadTimer); }
+      const editingLocal = state.editingId && state.items.get(state.editingId);
+      if (!state.demo) {
+        const next = new Map();
+        snap.docs.forEach(d => { if (d.exists) next.set(d.id, normalize(d.data())); });
+        // keep the in-progress local copy of the interview being edited
+        if (editingLocal && state.view === "entretien") next.set(state.editingId, editingLocal);
+        state.items = next;
+      }
+      state.loaded = true;
+      setBanner(state.readOnly ? "warn" : null, state.readOnly ? "Vous consultez ces fiches en lecture seule." : "");
+      if (state.view !== "entretien") render(); else paintSave();
+    }, err => {
+      clearTimeout(loadTimer);
+      state.loaded = true;
+      setBanner("warn", err && err.code === "revoked" ? "L'accès à l'enregistrement a été retiré." : "L'enregistrement est indisponible pour le moment. Rechargez la page plus tard.");
+      render();
+    });
+  } else {
+    clearTimeout(loadTimer);
+    state.backend = "local";
+    const all = localLoad();
+    Object.entries(all).forEach(([id, d]) => state.items.set(id, normalize(d)));
+    state.loaded = true;
+    setBanner("warn", "Enregistrement partagé indisponible ici : les fiches sont gardées dans ce navigateur uniquement. Exportez-les régulièrement.");
+    render();
+  }
+}
+function setBanner(kind, text) {
+  const el = $("#status-banner");
+  if (!text) { el.hidden = true; return; }
+  el.hidden = false; el.className = "banner " + (kind || "info"); el.textContent = text;
+}
+
+/* ---------- Démonstration (en mémoire seulement) ---------- */
+function demoData() {
+  const mk = (code, profil, extra, hs, cl) => {
+    const it = blankInterview(code); Object.assign(it, { statut: "realise", profil, duree: 45 }, extra);
+    Object.entries(hs).forEach(([k, v]) => Object.assign(it.h[k], v));
+    if (cl) { it.classement = cl.split(""); it.classementFait = true; }
+    return it;
+  };
+  const m = new Map();
+  m.set("demo1", mk("E01", "arc_multi", { typeCentre: "CHU", region: "Exemple", nbEtudes: 7, anciennete: 0.5, essai: true, gain: 6, citation: "Exemple fictif : « Je garde un Excel par étude pour savoir qui inclure. »" },
+    { H1: { exemple: true, intensite: 4, heures: 5, contournements: 1, chiffre: 8 }, H2: { exemple: true, intensite: 5, heures: 4, contournements: 1, impact: true, chiffre: 3 }, H3: { exemple: true, intensite: 3, heures: 6 }, H4: { exemple: true, intensite: 4, heures: 8, contournements: 1, chiffre: 40 }, H5: { exemple: false, intensite: 2, heures: 1 } }, "BDACE"));
+  m.set("demo2", mk("E02", "telecardio", { typeCentre: "CH", region: "Exemple", nbEtudes: 4, anciennete: 6, gain: 10 },
+    { H3: { exemple: true, intensite: 4, heures: 8, contournements: 1, impact: true, chiffre: 30 }, H4: { exemple: true, intensite: 5, heures: 12, contournements: 1, impact: true, chiffre: 55 } }, "DCBAE"));
+  m.set("demo3", mk("E03", "coord", { typeCentre: "CHU", region: "Exemple", nbEtudes: 9, anciennete: 3, gain: 8 },
+    { H1: { exemple: true, intensite: 4, heures: 6, contournements: 1, chiffre: 25 }, H3: { exemple: true, intensite: 4, heures: 5, contournements: 1, impact: true } }, "ACDBE"));
+  m.set("demo4", mk("E04", "adjud", { typeCentre: "CHU", region: "Exemple", anciennete: 8, gain: 4 },
+    { H4: { exemple: true, intensite: 4, heures: 6, contournements: 0, impact: true, chiffre: 30 } }, "DCABE"));
+  return m;
+}
+let savedItems = null;
+function enterDemo() { savedItems = state.items; state.items = demoData(); state.demo = true; $("#demo-banner").hidden = false; go("synthese"); }
+function exitDemo() { state.demo = false; state.items = savedItems || new Map(); savedItems = null; $("#demo-banner").hidden = true; state.editingId = null; go("entretiens"); }
+
+/* ---------- Navigation ---------- */
+const VALID = ["entretiens", "entretien", "synthese", "preparation"];
+function go(view) {
+  if (state.view === "entretien" && view !== "entretien") flushSave();
+  state.view = view; state.confirmDelete = false;
+  const h = view === "entretien" ? "entretiens" : view;
+  if (location.hash.slice(1) !== h) { try { history.replaceState(null, "", "#" + h); } catch (e) { location.hash = h; } }
+  render(); window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => {
+  const v = location.hash.slice(1);
+  if (VALID.includes(v) && v !== state.view && !(v === "entretiens" && state.view === "entretien")) { state.view = v; render(); }
+});
+
+function render() {
+  document.querySelectorAll(".tab").forEach(t => {
+    const active = t.dataset.view === state.view || (state.view === "entretien" && t.dataset.view === "entretiens");
+    if (active) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current");
+  });
+  VALID.forEach(v => { $("#view-" + v).hidden = v !== state.view; });
+  if (state.view === "entretiens") renderList();
+  else if (state.view === "entretien") renderEditor();
+  else if (state.view === "synthese") renderSynthesis();
+  else renderPrep();
+}
+
+/* ---------- Vue liste ---------- */
+function renderList() {
+  const el = $("#view-entretiens");
+  const items = sortedItems();
+  const done = items.filter(([, it]) => it.statut === "realise").length;
+  const planned = items.filter(([, it]) => it.statut === "planifie").length;
+  const canAdd = !state.readOnly && state.loaded;
+  let html = `
+    <div class="section-head">
+      <div><h2>Entretiens</h2><p class="muted small">Objectif du guide : 14 entretiens, répartis entre six profils.</p></div>
+      <button class="btn primary" id="add" type="button" ${canAdd ? "" : "disabled"}>Nouvel entretien</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="v">${done}<span class="muted" style="font-size:1rem"> / 14</span></span><span class="l">Entretiens réalisés</span></div>
+      <div class="stat"><span class="v">${planned}</span><span class="l">Planifiés</span></div>
+      <div class="stat"><span class="v">${items.filter(([, it]) => it.testeur === "oui").length}</span><span class="l">Testeurs volontaires</span></div>
+    </div>`;
+  if (!state.loaded) {
+    html += `<div class="panel empty"><p class="muted">Chargement des fiches…</p></div>`;
+  } else if (!items.length) {
+    html += `<div class="panel empty">
+      <h3>Aucun entretien pour l'instant</h3>
+      <p class="muted">Chaque entretien a sa fiche : identité anonymisée (code E01, E02…), notes par question, évaluation des hypothèses H1 à H5 et classement des problèmes. La synthèse applique ensuite les règles de décision du guide.</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn primary" id="add-empty" type="button" ${canAdd ? "" : "disabled"}>Créer la fiche E01</button>
+        <button class="btn" id="demo" type="button">Voir une démonstration</button>
+      </div></div>`;
+  } else {
+    html += `<div class="table-wrap"><table>
+      <thead><tr><th>Code</th><th>Date</th><th>Profil</th><th>Centre</th><th>Statut</th><th>Problème n° 1</th></tr></thead><tbody>`;
+    items.forEach(([id, it]) => {
+      const st = it.statut === "realise" ? "ok" : it.statut === "annule" ? "neutral" : "warn";
+      const p1 = it.classementFait ? HYP_BY_LETTER[it.classement[0]] : null;
+      html += `<tr class="click" data-id="${esc(id)}" tabindex="0">
+        <td class="mono"><strong>${esc(it.code)}</strong></td>
+        <td class="mono">${esc(fmtDate(it.date))}</td>
+        <td>${esc(PROFILES[it.profil]?.short || "À préciser")}</td>
+        <td>${esc(CENTRE_TYPES[it.typeCentre] || "—")}${it.region ? `<span class="muted"> · ${esc(it.region)}</span>` : ""}</td>
+        <td><span class="pill ${st}">${esc(STATUTS[it.statut] || it.statut)}</span></td>
+        <td>${p1 ? `<span class="hyp-id">${p1.id}</span>${esc(p1.module)}` : '<span class="muted">—</span>'}</td></tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
+  html += `<div class="panel"><div class="section-head"><h3>Exporter</h3>
+    <div class="row">
+      <button class="btn" id="exp-csv" type="button" ${items.length ? "" : "disabled"}>Télécharger en CSV</button>
+      <button class="btn" id="exp-json" type="button" ${items.length ? "" : "disabled"}>Télécharger en JSON</button>
+      <button class="btn ghost" id="copy-json" type="button" ${items.length ? "" : "disabled"}>Copier le JSON</button>
+    </div></div>
+    <p class="muted small" id="exp-msg">Le JSON peut être transmis à Claude pour une synthèse détaillée. Il ne doit contenir aucune donnée de patient.</p></div>`;
+  el.innerHTML = html;
+  const add = () => { if (!canAdd) return; const id = newId(); state.items.set(id, blankInterview(nextCode())); state.editingId = id; go("entretien"); persistNew(id); };
+  $("#add", el)?.addEventListener("click", add);
+  $("#add-empty", el)?.addEventListener("click", add);
+  $("#demo", el)?.addEventListener("click", enterDemo);
+  el.querySelectorAll("tr.click").forEach(tr => {
+    const open = () => { state.editingId = tr.dataset.id; go("entretien"); };
+    tr.addEventListener("click", open);
+    tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+  });
+  $("#exp-csv", el)?.addEventListener("click", () => exportFile("csv"));
+  $("#exp-json", el)?.addEventListener("click", () => exportFile("json"));
+  $("#copy-json", el)?.addEventListener("click", copyJson);
+}
+async function persistNew(id) { state.editingId = id; await flushSave(); }
+
+/* ---------- Vue fiche ---------- */
+function renderEditor() {
+  const el = $("#view-entretien");
+  const id = state.editingId; const it = state.items.get(id);
+  if (!it) { el.innerHTML = `<div class="panel empty"><p>Cette fiche n'existe plus.</p><button class="btn" id="back0" type="button">Retour aux entretiens</button></div>`; $("#back0").onclick = () => go("entretiens"); return; }
+  const ro = state.readOnly ? "disabled" : "";
+  const hypsOn = HYPS.filter(h => applicable(it, h));
+  const blocks = [BLOCKS[0], BLOCKS[1], ...hypsOn.map(h => BLOCKS.find(b => b.id === h.id))];
+
+  let html = `<div class="editbar">
+      <div class="row"><button class="btn ghost" id="back" type="button">← Entretiens</button><span class="code-badge">${esc(it.code)}</span><span class="save-state" id="save-state"></span></div>
+      <nav class="jump" aria-label="Aller à">
+        <a href="#b-identite" data-jump="b-identite">Identité</a>
+        ${blocks.map(b => `<a href="#b-${b.id}" data-jump="b-${b.id}">${b.hyp ? b.hyp.id : b.title.split(" ")[0]}</a>`).join("")}
+        <a href="#b-prio" data-jump="b-prio">Priorisation</a><a href="#b-cloture" data-jump="b-cloture">Clôture</a>
+      </nav></div>
+    <div class="banner info"><span><strong>Rappel :</strong> aucune donnée de patient (nom, date de naissance, numéro). Notez des faits et des chiffres, pas des opinions.</span></div>
+
+    <div class="panel block" id="b-identite">
+      <h2>Identité de l'entretien</h2>
+      <div class="grid">
+        ${fText("code", "Code", it.code, ro)}
+        <label class="field"><span>Date</span><input type="date" id="f-date" data-f="date" value="${esc(it.date || "")}" ${ro}></label>
+        ${fNum("duree", "Durée (min)", it.duree, ro)}
+        ${fSelect("statut", "Statut", it.statut, STATUTS, ro, false)}
+      </div>
+      <div class="grid">
+        ${fSelect("profil", "Profil", it.profil, Object.fromEntries(Object.entries(PROFILES).map(([k, v]) => [k, v.label])), ro, true)}
+        ${fSelect("typeCentre", "Type de centre", it.typeCentre, CENTRE_TYPES, ro, true)}
+        ${fText("region", "Région", it.region, ro)}
+      </div>
+      <div class="grid">
+        ${fNum("nbEtudes", "Nb d'études du réseau", it.nbEtudes, ro)}
+        ${fNum("anciennete", "Ancienneté sur le poste (années)", it.anciennete, ro, "0.5")}
+        <div class="field"><span>Essai randomisé dans le centre</span><label class="check"><input type="checkbox" data-f="essai" id="f-essai" ${it.essai ? "checked" : ""} ${ro}> DILEMMA, PROFID EHRA ou HERO</label></div>
+      </div>
+      ${fArea("outils", "Outils cités", it.outils, ro)}
+      ${!it.profil ? '<p class="warn-text">Choisissez le profil : il détermine les blocs de questions affichés.</p>' : `<p class="muted small">Blocs affichés pour ce profil : ${hypsOn.length ? hypsOn.map(h => h.id).join(", ") : "aucune hypothèse"}.</p>`}
+    </div>
+
+    <div class="panel"><h3>Ouverture (0–5 min)</h3><p class="script">${esc(OPENING)}</p></div>`;
+
+  blocks.forEach(b => {
+    const qs = Q.filter(q => q.b === b.id && (!q.only || q.only.includes(it.profil)));
+    html += `<div class="panel block" id="b-${b.id}">
+      <div class="section-head"><h2>${b.hyp ? `<span class="hyp-id">${b.hyp.id}</span>` : ""}${esc(b.title)}</h2>
+      <span class="muted small">${b.hyp ? esc("Module : " + b.hyp.module) : esc(b.time)}</span></div>`;
+    qs.forEach(q => {
+      const v = it.notes["q" + q.n] || "";
+      html += `<div class="q"><div class="q-text"><span class="q-num">Q${q.n}</span><div class="q-body">
+        <span>${q.p ? `<strong>${esc(q.t)}</strong>` : esc(q.t)}${q.only ? ` <span class="only">· ${esc(q.only.map(p => PROFILES[p].short).join(", "))}</span>` : ""}</span>
+        ${q.r ? `<span class="relance">→ ${esc(q.r)}</span>` : ""}
+        <textarea id="n-q${q.n}" data-note="q${q.n}" aria-label="Notes Q${q.n}" placeholder="Faits, chiffres, dernière occurrence…" ${ro}>${esc(v)}</textarea>
+        <span class="warn-text" data-warn="q${q.n}" ${PATIENT_RE.test(v) ? "" : "hidden"}>Ce texte semble contenir une date ou un numéro. Vérifiez qu'il ne s'agit pas d'une donnée de patient.</span>
+      </div></div></div>`;
+    });
+    if (b.hyp) html += evalPanel(it, b.hyp, ro);
+    html += `</div>`;
+  });
+
+  html += `<div class="panel block" id="b-prio">
+      <div class="section-head"><h2>Priorisation (5 min)</h2><span class="muted small">Lire les cinq problèmes sans évoquer de solution</span></div>
+      <p class="muted small">« Classez-les du plus pénible au moins pénible pour vous. » Utilisez les flèches pour réordonner.</p>
+      <div class="rank">${it.classement.map((L, i) => `
+        <div class="rank-item"><span class="rank-pos">${i + 1}</span><span class="rank-letter">${L}</span>
+        <span class="rank-text">${esc(HYP_BY_LETTER[L].problem)}</span>
+        <span class="rank-btns"><button type="button" data-mv="${i}" data-d="-1" aria-label="Monter ${L}" ${i === 0 || ro ? "disabled" : ""}>↑</button><button type="button" data-mv="${i}" data-d="1" aria-label="Descendre ${L}" ${i === 4 || ro ? "disabled" : ""}>↓</button></span></div>`).join("")}
+      </div>
+      <div class="grid">
+        <div class="field"><span>Classement</span><label class="check"><input type="checkbox" id="f-classementFait" data-f="classementFait" ${it.classementFait ? "checked" : ""} ${ro}> Classement fait avec la personne</label></div>
+        ${fNum("gain", "Gain estimé sur le problème n° 1 (h/mois)", it.gain, ro, "0.5")}
+      </div>
+    </div>
+
+    <div class="panel block" id="b-cloture">
+      <h2>Clôture et impressions</h2>
+      <p class="muted small">« Y a-t-il une question que je ne vous ai pas posée ? » · « Qui d'autre devrais-je interroger ? » · « Puis-je revenir vers vous avec une maquette ? »</p>
+      ${fArea("citation", "Citation marquante (anonymisée)", it.citation, ro)}
+      ${fArea("surprise", "Surprise, ou ce qui contredit mes hypothèses", it.surprise, ro)}
+      ${fArea("nouveau", "Problème inattendu évoqué", it.nouveau, ro)}
+      <div class="grid">
+        ${fSelect("testeur", "Accepte d'être testeur", it.testeur, { oui: "Oui", non: "Non" }, ro, true)}
+        ${fText("recommandations", "Personnes recommandées (fonction, centre)", it.recommandations, ro)}
+      </div>
+    </div>
+
+    <div class="panel"><div class="row spread">
+      <span class="muted small">Créée le ${esc(new Date(it.createdAt).toLocaleDateString("fr-FR"))}</span>
+      <div id="del-zone">${state.confirmDelete
+        ? `<div class="confirm"><span>Supprimer définitivement la fiche ${esc(it.code)} ?</span><button class="btn danger" id="del-yes" type="button">Supprimer</button><button class="btn" id="del-no" type="button">Annuler</button></div>`
+        : `<button class="btn danger" id="del" type="button" ${ro}>Supprimer la fiche</button>`}</div>
+    </div></div>`;
+  el.innerHTML = html;
+  paintSave();
+  bindEditor(el, id);
+}
+function evalPanel(it, h, ro) {
+  const e = it.h[h.id];
+  return `<div class="eval">
+    <span class="eval-title">Évaluation ${h.id} : preuves entendues</span>
+    <div class="grid">
+      <div class="field"><span>Exemple concret</span><label class="check"><input type="checkbox" id="h-${h.id}-exemple" data-h="${h.id}" data-k="exemple" ${e.exemple ? "checked" : ""} ${ro}> Récent, de moins de 6 mois</label></div>
+      <div class="field"><span>Impact sur la qualité scientifique</span><label class="check"><input type="checkbox" id="h-${h.id}-impact" data-h="${h.id}" data-k="impact" ${e.impact ? "checked" : ""} ${ro}> Clairement décrit</label></div>
+    </div>
+    <div class="field"><span>Intensité perçue (1 = gêne, 5 = douleur aiguë)</span>
+      <div class="seg" role="group" aria-label="Intensité ${h.id}">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-int="${h.id}" data-v="${n}" aria-pressed="${e.intensite === n}" ${ro}>${n}</button>`).join("")}</div></div>
+    <div class="grid">
+      ${hNum(h.id, "heures", "Temps perdu (h/mois)", e.heures, ro, "0.5")}
+      ${hNum(h.id, "contournements", "Contournements maison décrits", e.contournements, ro)}
+      ${hNum(h.id, "chiffre", h.key, e.chiffre, ro)}
+    </div>
+    <label class="field"><span>Preuves (faits, pas d'opinions)</span><textarea id="h-${h.id}-preuves" data-h="${h.id}" data-k="preuves" ${ro}>${esc(e.preuves)}</textarea></label>
+  </div>`;
+}
+function fText(f, label, v, ro) { return `<label class="field"><span>${esc(label)}</span><input type="text" id="f-${f}" data-f="${f}" value="${esc(v)}" ${ro}></label>`; }
+function fNum(f, label, v, ro, step) { return `<label class="field"><span>${esc(label)}</span><input type="number" min="0" ${step ? `step="${step}"` : ""} id="f-${f}" data-f="${f}" data-num="1" value="${v ?? ""}" ${ro}></label>`; }
+function hNum(h, k, label, v, ro, step) { return `<label class="field"><span>${esc(label)}</span><input type="number" min="0" ${step ? `step="${step}"` : ""} id="h-${h}-${k}" data-h="${h}" data-k="${k}" data-num="1" value="${v ?? ""}" ${ro}></label>`; }
+function fArea(f, label, v, ro) { return `<label class="field"><span>${esc(label)}</span><textarea id="f-${f}" data-f="${f}" ${ro}>${esc(v)}</textarea></label>`; }
+function fSelect(f, label, v, opts, ro, blank) {
+  return `<label class="field"><span>${esc(label)}</span><select id="f-${f}" data-f="${f}" ${ro}>${blank ? `<option value="">À préciser</option>` : ""}${Object.entries(opts).map(([k, l]) => `<option value="${esc(k)}" ${k === v ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`;
+}
+function bindEditor(el, id) {
+  const it = state.items.get(id);
+  $("#back", el).onclick = () => go("entretiens");
+  el.querySelectorAll("[data-jump]").forEach(a => a.addEventListener("click", ev => { ev.preventDefault(); const t = document.getElementById(a.dataset.jump); if (t) t.scrollIntoView({ block: "start" }); }));
+  bindButtons(el, id, it);
+}
+const RERENDER = new Set(["profil", "essai", "classementFait"]);
+function bindEditorDelegates(el) {
+  el.addEventListener("input", ev => {
+    const it = state.items.get(state.editingId); if (!it || state.view !== "entretien") return;
+    const t = ev.target;
+    if (t.dataset.note) {
+      it.notes[t.dataset.note] = t.value;
+      const w = el.querySelector(`[data-warn="${t.dataset.note}"]`); if (w) w.hidden = !PATIENT_RE.test(t.value);
+      scheduleSave();
+    } else if (t.dataset.h && t.type !== "checkbox") {
+      it.h[t.dataset.h][t.dataset.k] = t.dataset.num ? num(t.value) : t.value; scheduleSave();
+    } else if (t.dataset.f && t.type !== "checkbox" && t.tagName !== "SELECT") {
+      it[t.dataset.f] = t.dataset.num ? num(t.value) : t.value;
+      if (t.dataset.f === "code") { const b = $(".code-badge", el); if (b) b.textContent = t.value; }
+      scheduleSave();
+    }
+  });
+  el.addEventListener("change", ev => {
+    const it = state.items.get(state.editingId); if (!it || state.view !== "entretien") return;
+    const t = ev.target;
+    if (t.type === "checkbox" && t.dataset.h) { it.h[t.dataset.h][t.dataset.k] = t.checked; scheduleSave(); }
+    else if (t.type === "checkbox" && t.dataset.f) { it[t.dataset.f] = t.checked; scheduleSave(); if (RERENDER.has(t.dataset.f)) keepScroll(renderEditor); }
+    else if (t.tagName === "SELECT" && t.dataset.f) { it[t.dataset.f] = t.value; scheduleSave(); if (RERENDER.has(t.dataset.f)) keepScroll(renderEditor); }
+  });
+}
+function bindButtons(el, id, it) {
+  el.querySelectorAll("[data-int]").forEach(b => b.addEventListener("click", () => {
+    const h = b.dataset.int, v = Number(b.dataset.v);
+    it.h[h].intensite = it.h[h].intensite === v ? null : v;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(Number(x.dataset.v) === it.h[h].intensite)));
+    scheduleSave();
+  }));
+  el.querySelectorAll("[data-mv]").forEach(b => b.addEventListener("click", () => {
+    const i = Number(b.dataset.mv), j = i + Number(b.dataset.d);
+    if (j < 0 || j > 4) return;
+    const c = it.classement; [c[i], c[j]] = [c[j], c[i]]; it.classementFait = true;
+    scheduleSave(); keepScroll(renderEditor);
+  }));
+  $("#del", el)?.addEventListener("click", () => { state.confirmDelete = true; keepScroll(renderEditor); });
+  $("#del-no", el)?.addEventListener("click", () => { state.confirmDelete = false; keepScroll(renderEditor); });
+  $("#del-yes", el)?.addEventListener("click", async () => {
+    clearTimeout(saveTimer); saveTimer = null;
+    const backup = state.items.get(id);
+    state.editingId = null;
+    try { await removeItem(id); go("entretiens"); }
+    catch (e) { state.items.set(id, backup); state.editingId = id; state.saveState = "La suppression a échoué. Réessayez."; state.saveErr = true; keepScroll(renderEditor); }
+  });
+}
+function keepScroll(fn) { const y = window.scrollY; fn(); window.scrollTo(0, y); }
+
+/* ---------- Synthèse ---------- */
+function computeHyp(h, done) {
+  const c = done.filter(it => applicable(it, h));
+  const n = c.length;
+  const ex = c.filter(it => it.h[h.id].exemple).length;
+  const ints = c.map(it => it.h[h.id].intensite).filter(v => v !== null && v !== undefined);
+  const hrs = c.map(it => it.h[h.id].heures).filter(v => v !== null && v !== undefined);
+  const contours = c.reduce((s, it) => s + (it.h[h.id].contournements || 0), 0);
+  const impact = c.filter(it => it.h[h.id].impact).length;
+  const keyVals = c.map(it => it.h[h.id].chiffre).filter(v => v !== null && v !== undefined);
+  const ranked = done.filter(it => it.classementFait);
+  const ranks = ranked.map(it => it.classement.indexOf(h.letter) + 1).filter(r => r > 0);
+  const firsts = ranked.filter(it => it.classement[0] === h.letter).length;
+  const m = mean(ints), med = median(hrs);
+  const crit = [
+    { met: n > 0 && ex / n >= 0.5, v: n ? `${ex} / ${n}` : "—", l: "Exemples concrets récents (seuil : la moitié)" },
+    { met: m !== null && m >= 3.5, v: fmt(m), l: "Intensité moyenne (seuil : 3,5 / 5)" },
+    { met: contours >= 3, v: String(contours), l: "Contournements décrits (seuil : 3)" },
+    { met: (med !== null && med >= 4) || (n > 0 && impact / n >= 0.5), v: `${fmt(med)} h`, l: `Médiane h/mois (seuil : 4) ou impact qualité (${impact} / ${n || 0})` }
+  ];
+  const metCount = crit.filter(x => x.met).length;
+  let verdict, kind;
+  if (n < 3) { verdict = "Données insuffisantes"; kind = "neutral"; }
+  else if (metCount >= 3) { verdict = "Validée"; kind = "ok"; }
+  else if (metCount === 2) { verdict = "À confirmer"; kind = "warn"; }
+  else { verdict = "Non validée"; kind = "crit"; }
+  return { h, n, crit, metCount, verdict, kind, rankMean: mean(ranks), firsts, keyMed: median(keyVals), keyN: keyVals.length };
+}
+function renderSynthesis() {
+  const el = $("#view-synthese");
+  const all = [...state.items.values()];
+  const done = all.filter(it => it.statut === "realise");
+  const res = HYPS.map(h => computeHyp(h, done));
+  let html = `<div class="section-head"><div><h2>Synthèse</h2><p class="muted small">Règles fixées avant les entretiens (guide, partie 8.2) : une hypothèse est validée si au moins 3 des 4 conditions sont remplies.</p></div>
+    <span class="pill ${done.length >= 14 ? "ok" : "warn"}">${done.length} / 14 entretiens réalisés</span></div>`;
+  if (!state.loaded) { el.innerHTML = html + `<div class="panel empty"><p class="muted">Chargement…</p></div>`; return; }
+  if (!done.length) {
+    html += `<div class="panel empty"><h3>Pas encore de résultats</h3><p class="muted">La synthèse se remplit quand des fiches passent au statut « Réalisé ». Chaque hypothèse n'est calculée que sur les profils concernés.</p>
+      ${state.demo ? "" : '<button class="btn" id="demo2" type="button">Voir une démonstration</button>'}</div>`;
+    el.innerHTML = html; $("#demo2", el)?.addEventListener("click", enterDemo); return;
+  }
+  if (done.length < 14) html += `<div class="banner warn">Résultats provisoires : ${14 - done.length} entretien(s) restant(s) avant de décider.</div>`;
+
+  res.forEach(r => {
+    html += `<div class="panel"><div class="hyp-row">
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+        <h3><span class="hyp-id">${r.h.id}</span>${esc(r.h.module)}</h3>
+        <p class="muted small">${esc(r.h.problem)}</p>
+        <div class="row"><span class="pill ${r.kind} verdict">${r.verdict}</span><span class="muted small">${r.metCount} / 4 conditions · ${r.n} entretien(s) concerné(s)</span></div>
+        <p class="small">Rang moyen au classement : <span class="mono">${fmt(r.rankMean)}</span> · problème n° 1 pour <span class="mono">${r.firsts}</span> personne(s)</p>
+        <p class="small muted">${esc(r.h.key)} : <span class="mono">${r.keyN ? fmt(r.keyMed) + " (médiane, n=" + r.keyN + ")" : "—"}</span></p>
+      </div>
+      <div class="crit-list">${r.crit.map(c => `<div class="crit ${c.met ? "met" : "unmet"}"><span class="ck">${c.met ? "✓ Remplie" : "Non remplie"}</span><span class="cv">${esc(c.v)}</span><span class="cl">${esc(c.l)}</span></div>`).join("")}</div>
+    </div></div>`;
+  });
+
+  // Décision
+  const valid = res.filter(r => r.verdict === "Validée");
+  const ids = new Set(valid.map(r => r.h.id));
+  const lines = [];
+  if (done.length < 14) lines.push("Continuer les entretiens : la décision se prend sur l'échantillon complet.");
+  if (ids.has("H1") || ids.has("H2")) lines.push(`Construire le premier prototype sur ${["H1", "H2"].filter(x => ids.has(x)).map(x => HYPS.find(h => h.id === x).module).join(" et ")} (sans données de patients).`);
+  if (ids.has("H4")) {
+    const adj = done.some(it => it.profil === "adjud" && it.h.H4.exemple);
+    lines.push("H4 validée : lancer le cadrage réglementaire et technique du module Télécardiologie → adjudication." + (adj ? " Le comité d'adjudication confirme le problème." : " À confirmer avec le comité d'adjudication."));
+  }
+  if (ids.has("H3")) lines.push("H3 validée : le module Complétude sur 10 ans est à planifier après le premier prototype.");
+  if (ids.has("H5")) lines.push("H5 validée : KAIROS pour les essais randomisés reste pertinent pour DILEMMA, PROFID EHRA et HERO.");
+  if (!valid.length && done.length >= 14) lines.push("Aucune hypothèse validée : ne pas construire. Relire les surprises et les problèmes inattendus ci-dessous.");
+  if (!lines.length) lines.push("Aucune hypothèse validée à ce stade.");
+  const news = done.filter(it => it.nouveau && it.nouveau.trim());
+  if (news.length >= 5) lines.push(`${news.length} personnes ont évoqué un problème inattendu : vérifier s'il s'agit du même et en faire une nouvelle hypothèse.`);
+
+  html += `<div class="panel"><h3>Décision suggérée</h3><div class="decision">${lines.map(l => `<p>${esc(l)}</p>`).join("")}</div>
+    <p class="muted small">Suggestion calculée à partir des règles du guide. La décision finale vous revient, avec votre responsable.</p></div>`;
+
+  // Échantillon
+  html += `<div class="panel"><h3>Couverture de l'échantillon</h3><div class="progress-list">${Object.entries(PROFILES).map(([k, p]) => {
+      const c = done.filter(it => it.profil === k).length; const pct = Math.min(100, Math.round(c / p.target * 100));
+      return `<div class="progress-item"><span class="small">${esc(p.label)}</span><span class="mono small" style="text-align:right">${c} / ${p.target}</span><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+    }).join("")}</div>`;
+  const types = new Set(done.map(it => it.typeCentre).filter(Boolean));
+  const regions = new Set(done.map(it => (it.region || "").trim().toLowerCase()).filter(Boolean));
+  const junior = done.filter(it => it.anciennete !== null && it.anciennete < 1).length;
+  const senior = done.filter(it => it.anciennete !== null && it.anciennete > 5).length;
+  const div = [
+    [types.size === 3, `Types de centres : ${types.size} / 3 (CHU, CH, privé)`],
+    [regions.size >= 4, `Régions différentes : ${regions.size} (objectif : Paris et au moins 3 régions)`],
+    [junior >= 2, `Arrivés depuis moins d'un an : ${junior} / 2`],
+    [senior >= 2, `Plus de 5 ans d'ancienneté : ${senior} / 2`]
+  ];
+  html += `<ul class="clean small">${div.map(([ok, t]) => `<li><span class="pill ${ok ? "ok" : "warn"}">${ok ? "OK" : "À compléter"}</span> ${esc(t)}</li>`).join("")}</ul></div>`;
+
+  // Verbatims
+  const quotes = done.filter(it => it.citation && it.citation.trim());
+  const surprises = done.filter(it => it.surprise && it.surprise.trim());
+  html += `<div class="panel"><h3>Ce que disent les entretiens</h3>
+    <div class="label">Citations</div>${quotes.length ? `<ul class="clean">${quotes.map(it => `<li><span class="mono small">${esc(it.code)}</span> ${esc(it.citation)}</li>`).join("")}</ul>` : '<p class="muted small">Aucune citation notée.</p>'}
+    <div class="label">Surprises</div>${surprises.length ? `<ul class="clean">${surprises.map(it => `<li><span class="mono small">${esc(it.code)}</span> ${esc(it.surprise)}</li>`).join("")}</ul>` : '<p class="muted small">Aucune.</p>'}
+    <div class="label">Problèmes inattendus</div>${news.length ? `<ul class="clean">${news.map(it => `<li><span class="mono small">${esc(it.code)}</span> ${esc(it.nouveau)}</li>`).join("")}</ul>` : '<p class="muted small">Aucun.</p>'}
+    <p class="small">Testeurs volontaires : <span class="mono">${done.filter(it => it.testeur === "oui").map(it => it.code).join(", ") || "—"}</span></p>
+  </div>`;
+  el.innerHTML = html;
+}
+
+/* ---------- Préparation ---------- */
+function renderPrep() {
+  const el = $("#view-preparation");
+  el.innerHTML = `<div class="section-head"><h2>Préparation</h2></div>
+  <div class="panel"><h3>Les cinq principes</h3><ul class="clean">
+    <li><strong>Parler du passé, pas du futur.</strong> « Racontez-moi la dernière fois que… », jamais « Est-ce que vous utiliseriez… ? ».</li>
+    <li><strong>Ne pas présenter la solution</strong> avant la toute fin, ou pas du tout.</li>
+    <li><strong>Chercher des chiffres et des exemples concrets</strong> : combien de fois, combien de temps, la dernière occurrence.</li>
+    <li><strong>Écouter les contournements</strong> : un Excel maison ou un mail récapitulatif signale un vrai problème.</li>
+    <li><strong>Se taire</strong> après une question, et laisser le silence durer.</li></ul></div>
+  <div class="panel"><h3>Cadre éthique</h3><ul class="clean">
+    <li>Aucune donnée de patient : pas de nom, de numéro de patient, de date de naissance.</li>
+    <li>Notes anonymisées par code (E01, E02…). La correspondance code → personne se garde à part, hors de cette application, puis se détruit à la fin de l'analyse.</li>
+    <li>Enregistrement audio uniquement avec un accord explicite ; pas de transcription par un service d'IA externe sans l'avis du délégué à la protection des données.</li>
+    <li>On cherche des problèmes de système, pas des fautes de personnes ou de centres.</li></ul></div>
+  <div class="panel"><h3>Déroulé (45 min)</h3><div class="table-wrap"><table><thead><tr><th>Temps</th><th>Étape</th></tr></thead><tbody>
+    <tr><td class="mono">0–5</td><td>Ouverture, accord pour les notes</td></tr>
+    <tr><td class="mono">5–10</td><td>Contexte : rôle, centre, études, outils</td></tr>
+    <tr><td class="mono">10–20</td><td>Journée et semaine type</td></tr>
+    <tr><td class="mono">20–38</td><td>Blocs H1 à H5 selon le profil</td></tr>
+    <tr><td class="mono">38–43</td><td>Priorisation des cinq problèmes</td></tr>
+    <tr><td class="mono">43–45</td><td>Clôture, recommandations</td></tr></tbody></table></div></div>
+  <div class="panel"><div class="section-head"><h3>Message d'invitation</h3><button class="btn" id="copy-inv" type="button">Copier le message</button></div>
+    <pre class="copy" id="inv-text">${esc(INVITATION)}</pre><p class="muted small" id="inv-msg"></p></div>
+  <div class="panel"><h3>Ce qui compte comme une validation</h3>
+    <p>« Ce serait génial d'avoir un outil pour ça ! » n'est pas une validation. Une vraie validation, c'est : la personne décrit un contournement coûteux, donne un chiffre, accepte d'être testeuse, vous recommande quelqu'un.</p></div>`;
+  $("#copy-inv", el).addEventListener("click", async () => {
+    const msg = $("#inv-msg", el);
+    try { await navigator.clipboard.writeText(INVITATION); msg.textContent = "Message copié."; }
+    catch (e) { const r = document.createRange(); r.selectNodeContents($("#inv-text", el)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent = "Copie automatique impossible : le texte est sélectionné, copiez-le avec Ctrl+C (ou Cmd+C)."; }
+  });
+}
+
+/* ---------- Export ---------- */
+function exportRows() { return sortedItems().map(([, it]) => it); }
+function toCsv() {
+  const head = ["code", "date", "duree_min", "statut", "profil", "type_centre", "region", "nb_etudes", "anciennete_ans", "essai_randomise"];
+  HYPS.forEach(h => head.push(`${h.id}_concerne`, `${h.id}_exemple_recent`, `${h.id}_intensite`, `${h.id}_heures_mois`, `${h.id}_contournements`, `${h.id}_impact_qualite`, `${h.id}_chiffre_cle`));
+  head.push("classement", "classement_fait", "gain_h_mois", "testeur", "citation", "surprise", "probleme_inattendu", "recommandations");
+  const cell = v => { const s = v === null || v === undefined ? "" : String(v); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const lines = [head.join(";")];
+  exportRows().forEach(it => {
+    const row = [it.code, it.date, it.duree, it.statut, it.profil, it.typeCentre, it.region, it.nbEtudes, it.anciennete, it.essai ? "oui" : "non"];
+    HYPS.forEach(h => { const e = it.h[h.id]; row.push(applicable(it, h) ? "oui" : "non", e.exemple ? "oui" : "non", e.intensite, e.heures, e.contournements, e.impact ? "oui" : "non", e.chiffre); });
+    row.push(it.classement.join(""), it.classementFait ? "oui" : "non", it.gain, it.testeur, it.citation, it.surprise, it.nouveau, it.recommandations);
+    lines.push(row.map(cell).join(";"));
+  });
+  return "﻿" + lines.join("\r\n");
+}
+function toJson() { return JSON.stringify({ export: "Entretiens DAI-PP", date: new Date().toISOString(), entretiens: exportRows() }, null, 2); }
+async function exportFile(kind) {
+  const msg = $("#exp-msg");
+  const data = kind === "csv" ? toCsv() : toJson();
+  const filename = `entretiens-daipp-${today()}.${kind}`;
+  if (!downloads) { msg.textContent = "Le téléchargement n'est pas disponible ici. Utilisez « Copier le JSON »."; return; }
+  try { await downloads.save({ filename, data }); msg.textContent = `Fichier ${filename} proposé au téléchargement.`; }
+  catch (e) { msg.textContent = e && e.code === "declined" ? "Téléchargement annulé." : "Le téléchargement a échoué. Utilisez « Copier le JSON »."; }
+}
+async function copyJson() {
+  const msg = $("#exp-msg");
+  try { await navigator.clipboard.writeText(toJson()); msg.textContent = "JSON copié dans le presse-papiers."; }
+  catch (e) { msg.textContent = "Copie impossible dans cette vue. Utilisez le téléchargement JSON."; }
+}
+
+/* ---------- Démarrage ---------- */
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => go(t.dataset.view)));
+$("#exit-demo").addEventListener("click", exitDemo);
+bindEditorDelegates($("#view-entretien"));
+window.addEventListener("pagehide", () => { if (saveTimer) flushSave(); });
+const h0 = location.hash.slice(1);
+if (VALID.includes(h0) && h0 !== "entretien") state.view = h0;
+init();
+})();
+</script>
