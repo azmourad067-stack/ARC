@@ -1,0 +1,682 @@
+<title>KAIROS Rythme</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell — sticky header with tabs; each tab is a working view (form + results side by side on desktop, stacked on phone). */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #e9edf3; --fg: #121e2f; --muted: #586579; --line: #d4dbe5;
+  --accent: #2550b8; --accent-soft: #e2e9fa; --on-accent: #ffffff;
+  --ok: #1d7a4b; --ok-soft: #e0f2e8; --warn: #985a00; --warn-soft: #faefd9; --crit: #b3312a; --crit-soft: #fae3e1;
+  --font-text: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+    --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+    --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1621; --surface: #162131; --surface-2: #1d2a3d; --fg: #e6ecf4; --muted: #9aa8bb; --line: #2b3a50;
+  --accent: #7ea2ff; --accent-soft: #1f2d4d; --on-accent: #0b1220;
+  --ok: #5fcf97; --ok-soft: #173327; --warn: #f0b259; --warn-soft: #3a2c14; --crit: #ff8a80; --crit-soft: #3d1c1a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-text); font-size: 15px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+h1, h2, h3 { margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: 1.15rem; font-weight: 700; }
+h2 { font-size: 1.2rem; font-weight: 600; }
+h3 { font-size: 1rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-inner { max-width: 1100px; margin: 0 auto; padding-block: 10px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 6px; }
+.brand { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.brand .tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.tabs { display: flex; gap: 2px; overflow-x: auto; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--muted); font-weight: 500; white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
+.tab[aria-current="page"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tab .count { font-family: var(--font-mono); font-size: 0.72rem; background: var(--warn-soft); color: var(--warn); border-radius: 999px; padding: 0 6px; }
+
+main { max-width: 1100px; margin: 0 auto; padding-block: 18px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+.view { display: flex; flex-direction: column; gap: 18px; }
+.notice { background: var(--accent-soft); border-radius: var(--r); padding: 10px 14px; font-size: 0.88rem; }
+.intro { display: flex; flex-direction: column; gap: 4px; }
+.intro p { max-width: 78ch; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.split { display: grid; grid-template-columns: minmax(0, 370px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.spread { justify-content: space-between; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.88rem; text-align: left; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field > span { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+input[type="text"], input[type="number"], input[type="search"], select, textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 7px 10px; }
+textarea { min-height: 70px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--muted); }
+fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+legend { padding: 0; margin-bottom: 6px; }
+
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.crit { background: var(--crit-soft); color: var(--crit); }
+.pill.neutral { background: var(--surface-2); color: var(--muted); }
+.rid { font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent); background: var(--accent-soft); padding: 0 6px; border-radius: 4px; white-space: nowrap; }
+.prov { font-size: 0.74rem; font-weight: 600; padding: 0 6px; border-radius: 4px; white-space: nowrap; }
+.prov.reg { background: var(--ok-soft); color: var(--ok); }
+.prov.site { background: var(--accent-soft); color: var(--accent); }
+.prov.demo { background: var(--warn-soft); color: var(--warn); }
+
+.summary { display: flex; gap: 10px; flex-wrap: wrap; }
+.summary .s { background: var(--surface-2); border-radius: 6px; padding: 8px 12px; display: flex; flex-direction: column; min-width: 110px; }
+.summary .v { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 600; }
+.summary .l { font-size: 0.78rem; color: var(--muted); }
+.study { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.study.ok { border-left: 4px solid var(--ok); }
+.study.warn { border-left: 4px solid var(--warn); }
+.study.crit, .study.closed { border-left: 4px solid var(--line); }
+.study summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.study summary::-webkit-details-marker { display: none; }
+.study summary .name { font-weight: 600; }
+.study summary .desc { grid-column: 1 / -1; font-size: 0.84rem; color: var(--muted); }
+.study .body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+.crits { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.crits li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 0.9rem; }
+.mark { font-family: var(--font-mono); font-weight: 600; text-align: center; }
+.mark.t { color: var(--ok); } .mark.f { color: var(--crit); } .mark.u { color: var(--warn); } .mark.m { color: var(--muted); }
+.src { font-size: 0.78rem; color: var(--muted); }
+details.orig summary { cursor: pointer; font-size: 0.78rem; color: var(--muted); display: inline; }
+details.orig p { font-size: 0.8rem; color: var(--muted); font-style: italic; margin-top: 2px; }
+.sub { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--muted); margin-top: 4px; }
+.actions { background: var(--surface-2); border-radius: 6px; padding: 10px 12px; font-size: 0.88rem; display: flex; flex-direction: column; gap: 4px; }
+.alert { border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.alert.crit { background: var(--crit-soft); }
+.alert.warn { background: var(--warn-soft); }
+.alert.info { background: var(--accent-soft); }
+.alert strong { font-weight: 600; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; font-size: inherit; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.reg { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.reg dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; margin: 0; font-size: 0.86rem; }
+.reg dt { color: var(--muted); }
+.reg dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.flag { font-size: 0.84rem; border-radius: 6px; padding: 6px 10px; background: var(--warn-soft); }
+.flag.okf { background: var(--ok-soft); }
+
+.clar { border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--surface); scroll-margin-top: 120px; }
+.clar.hl { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.clar .q { font-weight: 600; }
+.clar .meta { font-size: 0.8rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.quote { border-left: 3px solid var(--line); padding-left: 10px; font-size: 0.84rem; color: var(--muted); font-style: italic; }
+.match { border: 1px dashed var(--accent); border-radius: var(--r); padding: 12px; display: flex; flex-direction: column; gap: 6px; background: var(--accent-soft); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.sev { width: 6px; padding: 0; }
+td.sev.crit { background: var(--crit); } td.sev.warn { background: var(--warn); } td.sev.info { background: var(--accent); }
+tr.done td { opacity: 0.45; text-decoration: line-through; }
+tr.done td.keep { text-decoration: none; opacity: 1; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.sources { font-size: 0.82rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.sources ul { margin: 0; padding-left: 1.2em; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><h1>KAIROS Rythme</h1><span class="tag">Prototype · sources publiques</span></div>
+    <nav class="tabs" aria-label="Modules">
+      <button class="tab" type="button" data-view="inclusion">Inclusion</button>
+      <button class="tab" type="button" data-view="registres">Registres <span class="count" id="reg-count"></span></button>
+      <button class="tab" type="button" data-view="interpretation">Interprétation</button>
+      <button class="tab" type="button" data-view="suivi">Suivi</button>
+      <button class="tab" type="button" data-view="regles">Règles</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="notice"><strong>Uniquement des données publiques.</strong> Critères, statuts et dates : fiches ClinicalTrials.gov. Centres : liste publique de dai-pp.com. Les patients sont <strong>synthétiques</strong> et générés par la page. Les fiches de registre résument les protocoles, sans les remplacer : le protocole en vigueur fait foi. Prototype de démonstration, à ne pas utiliser pour une décision d'inclusion.</p>
+
+  <section class="view" id="view-inclusion">
+    <div class="intro"><h2>Routeur d'inclusion</h2>
+      <p class="muted">Décrivez un patient synthétique. KAIROS confronte chaque étude du réseau à ses critères publics : chaque critère renvoie au numéro de l'étude dans le registre et au texte original. Les critères qu'aucune donnée saisie ne permet de vérifier restent à confirmer par l'investigateur.</p></div>
+    <div class="split">
+      <div class="panel" id="patient-form">
+        <div class="label">Cas synthétiques</div>
+        <div class="row" id="scenarios"></div>
+        <label class="field"><span>Votre centre (liste publique dai-pp.com)</span><select id="p-centre"></select></label>
+        <fieldset><legend class="label">Patient synthétique</legend>
+          <div class="grid2">
+            <label class="field"><span>Âge</span><input type="number" id="p-age" min="0" max="110"></label>
+            <label class="field"><span>Moment</span><select id="p-moment"><option value="avant">Avant implantation</option><option value="implante">Déjà implanté</option></select></label>
+          </div>
+          <label class="field"><span>Dispositif</span><select id="p-device">
+            <option value="none">Aucun (pas encore implanté)</option>
+            <option value="tv">DAI transveineux</option>
+            <option value="crtd">CRT-D (resynchronisation + défibrillation)</option>
+            <option value="sicd">DAI sous-cutané</option>
+            <option value="evicd">DAI extravasculaire</option>
+            <option value="micra_av">Pacemaker sans sonde Micra AV</option>
+            <option value="pm">Pacemaker conventionnel</option>
+          </select></label>
+          <div class="grid2">
+            <label class="field"><span>Implanté depuis (mois)</span><input type="number" id="p-delai" min="0" placeholder="—"></label>
+            <label class="field"><span>Prévention</span><select id="p-prev"><option value="">Inconnue</option><option value="primaire">Primaire</option><option value="secondaire">Secondaire</option></select></label>
+            <label class="field"><span>FEVG (%)</span><input type="number" id="p-fevg" min="5" max="80" placeholder="Inconnue"></label>
+            <label class="field"><span>Classe NYHA</span><select id="p-nyha"><option value="">Inconnue</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></label>
+            <label class="field"><span>Antécédent d'insuffisance cardiaque</span><select id="p-ic"><option value="">Inconnu</option><option value="oui">Oui</option><option value="non">Non</option></select></label>
+            <label class="field"><span>NT-proBNP ≥ 450 ng/L lors d'un épisode</span><select id="p-bnp"><option value="">Inconnu</option><option value="oui">Oui</option><option value="non">Non</option></select></label>
+            <label class="field"><span>Traitement optimal de l'IC ≥ 3 mois</span><select id="p-tmo"><option value="">Inconnu</option><option value="oui">Oui</option><option value="non">Non</option></select></label>
+            <label class="field"><span>Infarctus du myocarde</span><select id="p-idm"><option value="">Inconnu</option><option value="non">Aucun</option><option value="r40">Il y a moins de 40 jours</option><option value="r3m">Entre 40 jours et 3 mois</option><option value="ancien">Il y a 3 mois ou plus</option></select></label>
+            <label class="field"><span>Revascularisation coronaire</span><select id="p-revasc"><option value="">Inconnue</option><option value="non">Aucune dans les 90 jours</option><option value="r6s">Il y a moins de 6 semaines</option><option value="r90">Entre 6 semaines et 90 jours</option></select></label>
+            <label class="field"><span>Syncope (6 derniers mois)</span><select id="p-syncope"><option value="">Inconnue</option><option value="non">Non</option><option value="oui">Oui</option></select></label>
+            <label class="field"><span>Indication de resynchronisation</span><select id="p-crt"><option value="">Inconnue</option><option value="non">Non</option><option value="oui">Oui (classe I ou IIa)</option></select></label>
+            <label class="field"><span>DFG &lt; 30 ou dialyse</span><select id="p-dfg"><option value="">Inconnu</option><option value="non">Non</option><option value="oui">Oui</option></select></label>
+            <label class="field"><span>Tétralogie de Fallot</span><select id="p-fallot"><option value="non">Non</option><option value="oui">Oui</option><option value="">Inconnu</option></select></label>
+            <label class="field"><span>Algorithme HeartLogic</span><select id="p-hl"><option value="non">Non</option><option value="oui">Oui</option><option value="">Inconnu</option></select></label>
+            <label class="field"><span>Suivi en télécardiologie</span><select id="p-tele"><option value="oui">Oui</option><option value="non">Non</option><option value="">Inconnu</option></select></label>
+            <label class="field"><span>Porteur antérieur PM/DAI</span><select id="p-naive"><option value="">Inconnu</option><option value="non">Non (naïf)</option><option value="oui">Oui</option></select></label>
+          </div>
+        </fieldset>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0" id="results"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-registres" hidden>
+    <div class="intro"><h2>Veille des registres</h2>
+      <p class="muted">KAIROS lit les fiches publiques ClinicalTrials.gov des études du réseau et signale les incohérences à vérifier avec le promoteur : statut inconnu, date de fin dépassée alors que le recrutement est affiché, absence de mise à jour récente. Données relevées le 26/11/2026.</p></div>
+    <div class="cards" id="reg-cards"></div>
+  </section>
+
+  <section class="view" id="view-interpretation" hidden>
+    <div class="intro"><h2>Points d'interprétation</h2>
+      <p class="muted">Les nuances des critères publiés, celles qui génèrent des questions dans les centres, sont extraites et citées. Avant d'envoyer une question à la coordination, KAIROS cherche si un point publié y répond déjà.</p></div>
+    <div class="split">
+      <div class="panel">
+        <h3>Poser une question</h3>
+        <label class="field"><span>Étude</span><select id="cq-study"></select></label>
+        <label class="field"><span>Votre question</span><textarea id="cq-text" placeholder="Ex. : la FEVG peut-elle dater de plus de 6 semaines ?"></textarea></label>
+        <div id="cq-match"></div>
+        <div class="row"><button class="btn primary" id="cq-send" type="button">Enregistrer la question</button></div>
+        <p class="small muted" id="cq-msg">Les questions restent dans ce navigateur : rien n'est envoyé.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="row spread"><input type="search" id="c-search" placeholder="Rechercher" aria-label="Rechercher dans les points d'interprétation" style="max-width:320px"><div class="chips" id="c-filter"></div></div>
+        <div id="c-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-suivi" hidden>
+    <div class="intro"><h2>Suivi des échéances</h2>
+      <p class="muted">Patients <strong>synthétiques</strong> d'un centre de démonstration. Les durées de suivi viennent des fiches publiques (calendrier du critère principal). Les signaux de télécardiologie relèvent d'une règle de démonstration, signalée comme telle.</p></div>
+    <div class="row spread"><div class="chips" id="s-filter"></div><span class="small muted" id="s-meta"></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th aria-label="Gravité"></th><th>Fait</th><th>Patient</th><th>Étude</th><th>Signal</th><th>Échéance</th><th>Provenance</th><th>Action proposée</th></tr></thead>
+      <tbody id="s-body"></tbody></table></div>
+  </section>
+
+  <section class="view" id="view-regles" hidden>
+    <div class="intro"><h2>Référentiel des règles</h2>
+      <p class="muted">Chaque critère publié est traduit, rattaché à sa source et classé : vérifiable automatiquement à partir des données saisies, ou à confirmer par l'investigateur. La traduction est celle du prototype ; le texte original fait foi.</p></div>
+    <div class="row"><input type="search" id="r-search" placeholder="Filtrer les règles" aria-label="Filtrer les règles" style="max-width:320px"><span class="small muted" id="r-meta"></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Règle</th><th>Étude</th><th>Critère (traduction)</th><th>Vérification</th><th>Source</th></tr></thead>
+      <tbody id="r-body"></tbody></table></div>
+  </section>
+
+  <div class="panel sources">
+    <strong>Sources publiques (consultées le 26/11/2026)</strong>
+    <ul id="src-list"></ul>
+    <span>Liste des centres : <a href="https://dai-pp.com/centers" target="_blank" rel="noopener">dai-pp.com/centers</a>. Description de la cohorte DAI-PP : <a href="https://dai-pp.com/studies" target="_blank" rel="noopener">dai-pp.com/studies</a>.</span>
+  </div>
+</main>
+
+<script>
+(function () {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const T = true, F = false, U = null, M = "manual";
+const yn = v => v === "oui" ? T : v === "non" ? F : U;
+const no = v => v === "oui" ? F : v === "non" ? T : U;           // exclusion: present = fails
+const DAI = ["tv", "crtd", "sicd", "evicd"];
+const CENTRES = /*__CENTRES__*/null;
+const TODAY = new Date();
+
+/* ---------- Études : données publiques ClinicalTrials.gov et dai-pp.com ---------- */
+const STUDIES = [
+  { id: "DAIPP", name: "Cohorte DAI-PP", centresKey: "Cohorte DAI-PP", kind: "Cohorte", moment: "implante",
+    desc: "Cohorte de 10 000 patients implantés d'un DAI en prévention primaire ou secondaire, suivis en télécardiologie pendant 10 ans (promotion Inserm).",
+    source: { type: "site", label: "dai-pp.com", url: "https://dai-pp.com/studies", open: true },
+    registry: { title: "DAI-PP (registre initial 2012)", nct: "NCT01992458", note: "Aucune fiche ClinicalTrials.gov trouvée pour la cohorte démarrée en 2018. La fiche NCT01992458 correspond au registre DAI-PP initial (2012-2013, terminé).", status: "COMPLETED", start: "2012-01", pcd: "2013-11", last: "2013-11-25", enrollment: "5 576 (réel)", type: "Observationnelle", frSites: 1, followup: "3 ans (registre initial)" },
+    followMonths: 120, followSrc: "dai-pp.com : suivi en temps réel pendant 10 ans",
+    crit: [
+      { c: "I1", inc: true, fr: "Personne implantée d'un défibrillateur (prévention primaire ou secondaire)", en: "Toute personne implantée d'un défibrillateur et suivi en télécardiologie (page Patients)", test: p => p.device === "none" ? F : DAI.includes(p.device) },
+      { c: "I2", inc: true, fr: "Suivie en télécardiologie", en: "suivis en temps réel via la télécardiologie pendant 10 ans", test: p => yn(p.tele) }
+    ] },
+  { id: "HONEST", name: "HONEST", centresKey: "HONEST", kind: "Cohorte", moment: "implante",
+    desc: "Cohorte française des patients implantés d'un DAI sous-cutané.",
+    source: { type: "reg" },
+    registry: { nct: "NCT05302115", status: "UNKNOWN", start: "2012-10-13", pcd: "2019-12-31", last: "2022-05-12", enrollment: "5 000 (estimé)", type: "Observationnelle", frSites: 1, followup: "5 ans en moyenne" },
+    followMonths: 60, followSrc: "NCT05302115 : suivi moyen de 5 ans",
+    crit: [
+      { c: "I1", inc: true, fr: "Tout patient nécessitant l'implantation d'un DAI sous-cutané (primo-implantation ou remplacement de boîtier)", en: "All patients who require S-ICD implantation (new or battery replacement)", test: p => p.device === "none" ? U : p.device === "sicd" },
+      { c: "E1", inc: false, fr: "Refus de consentement", en: "Refusal of consent", test: () => M }
+    ] },
+  { id: "FOREVER", name: "FOREVER", centresKey: "FOREVER", kind: "Cohorte", moment: "implante",
+    desc: "Cohorte française des patients implantés d'un DAI extravasculaire.",
+    source: { type: "reg" },
+    registry: { nct: "NCT06739239", status: "RECRUITING", start: "2024-02-01", pcd: "2030-12-31", last: "2024-12-20", enrollment: "1 000 (estimé)", type: "Observationnelle", frSites: 1, followup: "5 ans en moyenne" },
+    followMonths: 60, followSrc: "NCT06739239 : suivi moyen de 5 ans",
+    crit: [
+      { c: "I1", inc: true, fr: "Tout patient implanté d'un DAI extravasculaire", en: "All patients undergoing EV-ICD implantation", test: p => p.device === "none" ? U : p.device === "evicd" },
+      { c: "E1", inc: false, fr: "Refus de consentement", en: "Refusal of consent", test: () => M }
+    ] },
+  { id: "AVCESAR", name: "AV-CESAR", centresKey: "AV-CESAR", kind: "Cohorte", moment: "implante",
+    desc: "Cohorte française des patients implantés d'un pacemaker sans sonde Micra AV.",
+    source: { type: "reg" },
+    registry: { nct: "NCT05953558", status: "RECRUITING", start: "2023-05-01", pcd: "2023-11-01", last: "2023-07-20", enrollment: "1 000 (estimé)", type: "Observationnelle", frSites: 1, followup: "3 ans en moyenne" },
+    followMonths: 36, followSrc: "NCT05953558 : suivi moyen de 3 ans",
+    crit: [
+      { c: "I1", inc: true, fr: "Tout patient implanté d'un Micra AV", en: "All patients who underwent Micra AV implantation", test: p => p.device === "none" ? U : p.device === "micra_av" },
+      { c: "Âge", inc: true, fr: "Âge de 18 à 110 ans (champ « âge » du registre)", en: "Minimum age 18 years, maximum age 110 years", test: p => p.age === null ? U : p.age >= 18 && p.age <= 110 },
+      { c: "E1", inc: false, fr: "Refus de consentement", en: "Refusal of consent", test: () => M }
+    ] },
+  { id: "T4F", name: "DAI-T4F", centresKey: "DAI-T4F", kind: "Registre", moment: "implante",
+    desc: "Registre national des patients avec tétralogie de Fallot porteurs d'un DAI.",
+    source: { type: "reg" },
+    registry: { nct: "NCT03837574", status: "RECRUITING", start: "2010-12-01", pcd: "2019-08-01", last: "2019-02-12", enrollment: "150 (estimé)", type: "Observationnelle", frSites: 1, followup: "1 an en moyenne (jusqu'à la fin de l'étude)" },
+    followMonths: 12, followSrc: "NCT03837574 : en moyenne 1 an",
+    crit: [
+      { c: "I1", inc: true, fr: "Tétralogie de Fallot", en: "tetralogy of Fallot", test: p => yn(p.fallot) },
+      { c: "I2", inc: true, fr: "Porteur d'un défibrillateur automatique implantable", en: "implantable cardioverter defibrillator", test: p => p.device === "none" ? F : DAI.includes(p.device) },
+      { c: "E1", inc: false, fr: "Âge inférieur à 18 ans", en: "age < 18 years", test: p => p.age === null ? U : p.age >= 18 }
+    ] },
+  { id: "DILEMMA", name: "DILEMMA", centresKey: "DILEMMA", kind: "Essai randomisé", moment: "avant",
+    desc: "Essai randomisé : traitement optimal de l'insuffisance cardiaque seul ou associé à un DAI en prévention primaire, après 70 ans (promoteur AP-HP).",
+    source: { type: "reg" },
+    registry: { nct: "NCT05373940", status: "RECRUITING", start: "2022-06-29", pcd: "2030-05-31", last: "2026-03-24", enrollment: "730 (estimé)", type: "Interventionnelle randomisée", frSites: 19, followup: "48 mois après randomisation" },
+    followMonths: 48, followSrc: "NCT05373940 : critère principal à 48 mois après randomisation",
+    crit: [
+      { c: "Bras", inc: true, fr: "Randomisation avant l'implantation : l'un des bras ne reçoit pas de DAI", en: "This group will not undergo an ICD implantation (arm: HFOT alone)", test: p => p.moment === "avant" && p.device === "none" },
+      { c: "I1", inc: true, fr: "Âge de 70 ans ou plus", en: "≥70 years old", test: p => p.age === null ? U : p.age >= 70 },
+      { c: "I2", inc: true, fr: "FEVG ≤ 35 % (échographie, scintigraphie ou IRM, à l'inclusion ou dans les 6 semaines précédentes)", en: "Left ventricular ejection fraction ≤ 35% … assessed at inclusion or within the 6 weeks prior to inclusion", test: p => p.fevg === null ? U : p.fevg <= 35, interp: "I2" },
+      { c: "I3", inc: true, fr: "Classe NYHA II ou III", en: "NYHA class II or III", test: p => p.nyha === "" ? U : ["II", "III"].includes(p.nyha) },
+      { c: "I4", inc: true, fr: "Insuffisance cardiaque sous traitement optimal depuis au moins 3 mois (exceptions possibles)", en: "Heart failure HFOT ≥ 3 months (Possible exceptions …)", test: p => yn(p.tmo), interp: "I4" },
+      { c: "I5", inc: true, fr: "Consentement éclairé", en: "Providing informed consent", test: () => M },
+      { c: "I6", inc: true, fr: "Affiliation à un régime de sécurité sociale français", en: "Affiliated to a French Health Insurance system", test: () => M },
+      { c: "E1", inc: false, fr: "Inclusion prévue ou en cours dans un essai interventionnel concurrent (évaluant le DAI ou modifiant le traitement hors recommandations ESC)", en: "Enrolled in or planning to enroll in a conflicting interventional trial", test: () => M, conflict: true },
+      { c: "E2", inc: false, fr: "Antécédent d'arythmie ventriculaire soutenue instable ayant nécessité une cardioversion externe", en: "Prior unstable sustained ventricular arrhythmia requiring external cardioversion", test: () => M },
+      { c: "E3", inc: false, fr: "Infarctus du myocarde dans les 40 jours", en: "Myocardial infarction within the 40 days", test: p => p.idm === "" ? U : p.idm !== "r40" },
+      { c: "E4", inc: false, fr: "Revascularisation coronaire (cathéter ou chirurgie) dans les 90 jours", en: "Coronary artery intervention (catheter or surgical) within 90 days", test: p => p.revasc === "" ? U : p.revasc === "non" },
+      { c: "E5", inc: false, fr: "Syncope dans les 6 mois précédents", en: "History of syncope in the previous 6 months", test: p => no(p.syncope) },
+      { c: "E6", inc: false, fr: "Maladie cérébrovasculaire avancée", en: "Advanced cerebrovascular disease", test: () => M },
+      { c: "E7", inc: false, fr: "Troubles cognitifs empêchant le consentement", en: "Cognitive impairment leading to the incapacity of consent", test: () => M },
+      { c: "E8", inc: false, fr: "Maladie non cardiaque avec survie probable inférieure à 1 an", en: "Any disease other than cardiac disease … survival less than 1 year", test: () => M },
+      { c: "E9", inc: false, fr: "Tutelle, curatelle ou sauvegarde de justice", en: "Patient under tutorship, curatorship, or legal safeguard", test: () => M },
+      { c: "E10", inc: false, fr: "Personne privée de liberté", en: "Persons deprived of their liberty", test: () => M }
+    ] },
+  { id: "PROFID", name: "PROFID EHRA", centresKey: "PROFID EHRA", kind: "Essai randomisé", moment: "avant",
+    desc: "Essai randomisé européen : traitement médical optimal avec ou sans DAI après infarctus avec FEVG ≤ 35 % (promoteur Charité, Berlin).",
+    source: { type: "reg" },
+    registry: { nct: "NCT05665608", status: "RECRUITING", start: "2023-11-16", pcd: "2027-11-30", last: "2026-04-01", enrollment: "3 595 (estimé)", type: "Interventionnelle randomisée", frSites: 10, followup: "Événementiel : environ 15 mois après le dernier patient inclus" },
+    followMonths: null, followSrc: "NCT05665608 : critère principal événementiel",
+    crit: [
+      { c: "I1", inc: true, fr: "Âge de 18 ans ou plus", en: "Age ≥18 years", test: p => p.age === null ? U : p.age >= 18 },
+      { c: "I2", inc: true, fr: "Naïf de toute implantation de pacemaker ou de défibrillateur", en: "Naïve to implantation of any pacemaker or defibrillator", test: p => p.device !== "none" ? F : no(p.naive) },
+      { c: "I3", inc: true, fr: "Infarctus documenté (STEMI ou NSTEMI) au moins 3 mois avant l'inclusion", en: "Documented history of MI … at least 3 months prior to enrolment", test: p => p.idm === "" ? U : p.idm === "ancien", interp: "I3" },
+      { c: "I4", inc: true, fr: "Insuffisance cardiaque symptomatique, classe NYHA II ou III", en: "Symptomatic heart failure with NYHA class II or III", test: p => p.nyha === "" ? U : ["II", "III"].includes(p.nyha) },
+      { c: "I5", inc: true, fr: "Traitement médical optimal depuis au moins 3 mois", en: "On OMT for at least 3 months prior to enrolment", test: p => yn(p.tmo) },
+      { c: "I6", inc: true, fr: "FEVG ≤ 35 % (échographie ou IRM, au moins 3 mois après l'infarctus)", en: "LVEF ≤ 35% (… at least 3 months after MI)", test: p => p.fevg === null ? U : p.fevg <= 35 },
+      { c: "I7", inc: true, fr: "Consentement éclairé signé", en: "Signed informed consent", test: () => M },
+      { c: "E1", inc: false, fr: "Indication de DAI en prévention secondaire (classe I ou IIa)", en: "Class I or IIa indication for implantation of an ICD for secondary prevention", test: p => p.prev === "" ? U : p.prev !== "secondaire", interp: "E1" },
+      { c: "E2", inc: false, fr: "Tachycardie ventriculaire déclenchée en exploration électrophysiologique", en: "Ventricular tachycardia induced in an electrophysiologic study", test: () => M },
+      { c: "E3", inc: false, fr: "Syncope inexpliquée suspecte d'origine ventriculaire", en: "Unexplained syncope when ventricular arrhythmia is suspected", test: p => p.syncope === "oui" ? U : p.syncope === "non" ? T : U },
+      { c: "E4", inc: false, fr: "Indication de resynchronisation cardiaque (classe I ou IIa)", en: "Class I or IIa indication for Cardiac Resynchronization Therapy", test: p => no(p.crt) },
+      { c: "E6", inc: false, fr: "Syndrome coronaire aigu, angioplastie ou pontage dans les 6 semaines", en: "Acute coronary syndrome or coronary angioplasty or CABG within 6 weeks", test: p => p.revasc === "" ? U : p.revasc !== "r6s" },
+      { c: "E7", inc: false, fr: "Chirurgie ou intervention valvulaire dans les 6 semaines", en: "Cardiac valve surgery or percutaneous valvular intervention within 6 weeks", test: () => M },
+      { c: "E8", inc: false, fr: "Inscription sur liste de transplantation cardiaque", en: "On the waiting list for heart transplantation", test: () => M },
+      { c: "E9", inc: false, fr: "Maladie limitant l'espérance de vie à moins d'un an", en: "Any known disease that limits life expectancy to less than 1 year", test: () => M },
+      { c: "E10", inc: false, fr: "Participation à un autre essai randomisé dont le traitement est encore actif", en: "Participation in another randomised clinical trial if study-specific treatment is still active", test: () => M, conflict: true, interp: "E10" },
+      { c: "E11", inc: false, fr: "Participation antérieure à PROFID EHRA", en: "Previous participation in PROFID EHRA", test: () => M }
+    ] },
+  { id: "HERO", name: "HERO", centresKey: "HERO", kind: "Essai randomisé", moment: "implante",
+    desc: "Essai randomisé : prise en charge à distance guidée par HeartLogic ou suivi classique en consultation (promoteur CHU de Poitiers).",
+    source: { type: "reg" },
+    registry: { nct: "NCT07544771", status: "RECRUITING", start: "2026-04-29", pcd: "2028-10-15", last: "2026-10-19", enrollment: "578 (estimé)", type: "Interventionnelle randomisée", frSites: 15, followup: "12 mois" },
+    followMonths: 12, followSrc: "NCT07544771 : critère principal à 12 mois",
+    crit: [
+      { c: "I1", inc: true, fr: "Âge de 18 ans ou plus", en: "Patients aged ≥18 years old", test: p => p.age === null ? U : p.age >= 18 },
+      { c: "I2", inc: true, fr: "Défibrillateur (avec ou sans resynchronisation) équipé de HeartLogic, implanté depuis moins de 6 mois", en: "Implanted with a cardiac defibrillator for less than 6 months … enabling the HeartLogic™ algorithm", test: p => { if (p.device === "none") return F; if (!["tv", "crtd"].includes(p.device)) return F; const h = yn(p.hl); if (h !== T) return h; return p.delai === null ? U : p.delai < 6; }, interp: "I2" },
+      { c: "I3", inc: true, fr: "Antécédent d'insuffisance cardiaque : FEVG ≤ 40 %, ou épisode clinique avec NT-proBNP ≥ 450 ng/L", en: "History of HF (LVEF ≤40%; or at least one episode of clinical HF with NT-proBNP ≥450 ng/L)", test: p => { const ic = yn(p.ic); if (ic === F) return F; if (p.fevg !== null && p.fevg <= 40) return T; if (p.bnp === "oui") return T; if ((p.fevg !== null && p.fevg > 40) && p.bnp === "non") return F; return U; }, interp: "I3" },
+      { c: "I4", inc: true, fr: "Classe NYHA II ou III", en: "NYHA Class II or III HF", test: p => p.nyha === "" ? U : ["II", "III"].includes(p.nyha) },
+      { c: "I5", inc: true, fr: "Capable de suivre le protocole, y compris les transmissions Latitude (connectivité suffisante) et les visites", en: "Able to comply with the protocol, including Latitude™ transmissions", test: () => M },
+      { c: "I6", inc: true, fr: "Affilié à l'assurance maladie obligatoire", en: "Patients with compulsory health insurance", test: () => M },
+      { c: "E2", inc: false, fr: "Dispositif invasif de télésurveillance de l'insuffisance cardiaque (type CardioMEMS)", en: "Invasive remote HF monitoring device (such as CardioMems)", test: () => M },
+      { c: "E3", inc: false, fr: "Autre dispositif de l'insuffisance cardiaque que la resynchronisation (assistance ventriculaire, modulation de contractilité)", en: "Concomitant HF device other than cardiac resynchronization", test: () => M },
+      { c: "E4", inc: false, fr: "Inscrit sur liste de transplantation ou transplanté", en: "On heart transplant list, or with a heart transplant", test: () => M },
+      { c: "E5", inc: false, fr: "DFG inférieur à 30 mL/min/m²", en: "Glomerular filtration rate <30 ml/min/m2", test: p => no(p.dfg) },
+      { c: "E6", inc: false, fr: "Participation à une étude concomitante sur la prise en charge des décompensations ou la titration des diurétiques", en: "Participation to a concomitant study evaluating management of HF decompensation, or diuretic titration", test: () => M, conflict: true },
+      { c: "E8", inc: false, fr: "Bénéficiaire de l'Aide médicale d'État", en: "Patients receiving State Medical Aid", test: () => M },
+      { c: "E9", inc: false, fr: "Grossesse ou allaitement", en: "Pregnant or breastfeeding women", test: () => M },
+      { c: "E10", inc: false, fr: "Personnes bénéficiant d'une protection renforcée (mineurs, privation de liberté, protection juridique, urgence)", en: "Persons benefiting from a reinforced protection …", test: () => M }
+    ] },
+  { id: "HLFR", name: "HeartLogic France", centresKey: null, kind: "Étude observationnelle", moment: "implante",
+    desc: "Suivi des insuffisants cardiaques porteurs d'un défibrillateur avec HeartLogic (promoteur CHU de Poitiers). Terminée selon le registre.",
+    source: { type: "reg" },
+    registry: { nct: "NCT04619888", status: "COMPLETED", start: "2021-03-10", pcd: "2024-07-30", last: "2024-11-19", enrollment: "310 (réel)", type: "Observationnelle", frSites: 10, followup: "12 mois" },
+    followMonths: 12, followSrc: "NCT04619888 : 12 mois",
+    crit: [
+      { c: "I1", inc: true, fr: "Défibrillateur, avec ou sans resynchronisation, équipé de l'index HeartLogic", en: "Patient implanted with a cardiac defibrillator … enabled with the HeartLogic index", test: p => ["tv", "crtd"].includes(p.device) ? yn(p.hl) : (p.device === "none" ? U : F) },
+      { c: "I2", inc: true, fr: "Antécédent d'insuffisance cardiaque (FEVG ≤ 40 % ou épisode clinique avec NT-proBNP ≥ 450 ng/L)", en: "History of heart failure (LVEF ≤40 %; or … NT pro BNP≥450 ng/L)", test: p => { const ic = yn(p.ic); if (ic === F) return F; if ((p.fevg !== null && p.fevg <= 40) || p.bnp === "oui") return T; return U; } },
+      { c: "E3", inc: false, fr: "DFG inférieur à 30 mL/min/m² ou dialyse", en: "Glomerular filtration rate <30 ml/mn/m2 or dialysis", test: p => no(p.dfg) }
+    ] }
+];
+const BY = Object.fromEntries(STUDIES.map(s => [s.id, s]));
+const ctUrl = nct => `https://clinicaltrials.gov/study/${nct}`;
+const STATUS_FR = { RECRUITING: "Recrutement en cours", COMPLETED: "Terminée", UNKNOWN: "Statut inconnu", ACTIVE_NOT_RECRUITING: "Active, recrutement terminé", WITHDRAWN: "Retirée" };
+
+/* Co-inclusion : règles issues des critères d'exclusion publiés */
+const CONFLICTS = [
+  { a: "DILEMMA", b: "PROFID", text: "DILEMMA et PROFID EHRA randomisent toutes deux l'implantation d'un DAI : chacune exclut la participation à un essai interventionnel concurrent.", refs: ["DILEMMA E1", "PROFID EHRA E10"] },
+  { a: "HERO", b: "HLFR", text: "HERO exclut la participation concomitante à une étude sur la prise en charge de l'insuffisance cardiaque.", refs: ["HERO E6"] }
+];
+
+/* ---------- Points d'interprétation (texte public cité) ---------- */
+const INTERP = [
+  { id: "PI-01", study: "DILEMMA", rule: "DILEMMA I4", q: "Le traitement optimal de l'insuffisance cardiaque doit-il obligatoirement être en place depuis 3 mois ?", a: "Le registre prévoit des exceptions : patients qui ne tolèrent pas la dose maximale ou les quatre classes thérapeutiques, ou arrêt ou ajustement d'une classe pour mauvaise tolérance, sans attendre 3 mois.", quote: "Possible exceptions : possibility of including patients who do not tolerate the maximum dose or who do not tolerate all four therapeutic classes, as well as the possibility of not waiting for three months when one of the classes is discontinued or when dosage adjustments are made due to poor tolerance" },
+  { id: "PI-02", study: "DILEMMA", rule: "DILEMMA I2", q: "Quelle mesure de FEVG retenir, et de quand peut-elle dater ?", a: "Échographie, scintigraphie, ventriculographie isotopique ou IRM, réalisée à l'inclusion ou dans les 6 semaines qui précèdent.", quote: "assessed by echocardiography, single-photon emission computed tomography and radionuclide ventriculography and/or cardiac magnetic resonance (CMR) (assessed at inclusion or within the 6 weeks prior to inclusion)" },
+  { id: "PI-03", study: "PROFID", rule: "PROFID EHRA I3", q: "Quelle définition de l'infarctus utiliser pour PROFID EHRA ?", a: "La quatrième définition universelle de l'infarctus (ESC/ACC/AHA/WHF 2018). L'infarctus doit dater d'au moins 3 mois.", quote: "Inclusion criterion I3 defines myocardial infarction according to the 2018 ESC/ACC/AHA/WHF Fourth Universal Definition of myocardial infarction" },
+  { id: "PI-04", study: "PROFID", rule: "PROFID EHRA E1", q: "Selon quelles recommandations juger une indication de prévention secondaire ?", a: "Les recommandations ESC 2022 sur les arythmies ventriculaires et la prévention de la mort subite.", quote: "Class I or IIa indication for implantation of an ICD for secondary prevention of SCD and ventricular tachy-cardia has to be assessed according to the 2022 ESC Guidelines" },
+  { id: "PI-05", study: "PROFID", rule: "PROFID EHRA E10", q: "Un patient de PROFID EHRA peut-il être inclus en parallèle dans une cohorte observationnelle ?", a: "Oui : la participation parallèle aux sous-études et aux études purement observationnelles sans intervention prédéfinie est autorisée.", quote: "Parallel participation in sub-studies connected to this trial is permitted as well as in purely observational studies without any pre-defined intervention." },
+  { id: "PI-06", study: "HERO", rule: "HERO I2", q: "Jusqu'à quand un patient implanté avec HeartLogic peut-il être inclus dans HERO ?", a: "Le défibrillateur doit être implanté depuis moins de 6 mois : la fenêtre se ferme 6 mois après l'implantation.", quote: "Patients implanted with a cardiac defibrillator for less than 6 months, with or without resynchronization, enabling the HeartLogic™ algorithm" },
+  { id: "PI-07", study: "HERO", rule: "HERO I3", q: "Un patient à FEVG préservée peut-il entrer dans HERO ?", a: "Oui, s'il a eu au moins un épisode clinique d'insuffisance cardiaque avec un NT-proBNP ≥ 450 ng/L. Sinon, une FEVG ≤ 40 % est requise.", quote: "Patients with a history of HF (left ventricular ejection fraction ≤40%; or at least one episode of clinical HF with NT-proBNP blood concentration ≥450 ng/L)" },
+  { id: "PI-08", study: "HONEST", rule: "HONEST I1", q: "Un remplacement de boîtier de DAI sous-cutané est-il éligible à HONEST ?", a: "Oui : le registre inclut les primo-implantations et les remplacements de boîtier.", quote: "All patients who require S-ICD implantation (new or battery replacement)" },
+  { id: "PI-09", study: "T4F", rule: "DAI-T4F E1", q: "Un adolescent avec tétralogie de Fallot et DAI peut-il entrer dans DAI-T4F ?", a: "Non : les moins de 18 ans sont exclus.", quote: "Exclusion Criteria: age < 18 years" },
+  { id: "PI-10", study: "HERO", rule: "HERO I5", q: "Faut-il vérifier la connectivité du patient avant l'inclusion dans HERO ?", a: "Oui : le patient doit pouvoir assurer les transmissions Latitude, avec une connectivité suffisante.", quote: "Patient able to comply with the protocol, including Latitude™ transmissions (including adequate connectivity), and study visits." }
+];
+const USER_KEY = "kairos-questions-v2";
+let USERQ = [];
+try { const x = JSON.parse(localStorage.getItem(USER_KEY) || "[]"); if (Array.isArray(x)) USERQ = x; } catch (e) {}
+
+/* ---------- Cas synthétiques ---------- */
+const BASE = { age: null, moment: "avant", device: "none", delai: null, prev: "", fevg: null, nyha: "", ic: "", bnp: "", tmo: "", idm: "", revasc: "", syncope: "", crt: "", dfg: "", fallot: "non", hl: "non", tele: "", naive: "" };
+const SCENARIOS = [
+  { label: "76 ans, ischémique, FEVG 30 %", centre: "Hôpital européen Georges-Pompidou (Paris)", p: { age: 76, moment: "avant", device: "none", prev: "primaire", fevg: 30, nyha: "II", ic: "oui", tmo: "oui", idm: "ancien", revasc: "non", syncope: "non", crt: "non", naive: "non" } },
+  { label: "68 ans, CRT-D HeartLogic à 2 mois", centre: "CHU de Poitiers (Poitiers)", p: { age: 68, moment: "implante", device: "crtd", delai: 2, prev: "primaire", fevg: 32, nyha: "III", ic: "oui", bnp: "oui", tmo: "oui", hl: "oui", tele: "oui", dfg: "non" } },
+  { label: "34 ans, Fallot, DAI sous-cutané", centre: "CHU de Nantes (Nantes)", p: { age: 34, moment: "implante", device: "sicd", delai: 0, prev: "primaire", fevg: 50, fallot: "oui", tele: "oui", ic: "non" } },
+  { label: "82 ans, Micra AV", centre: "Clinique Pasteur (Toulouse)", p: { age: 82, moment: "implante", device: "micra_av", delai: 0, tele: "oui" } }
+];
+
+/* ---------- Évaluation ---------- */
+const FIELDS = { age: "p-age", moment: "p-moment", device: "p-device", delai: "p-delai", prev: "p-prev", fevg: "p-fevg", nyha: "p-nyha", ic: "p-ic", bnp: "p-bnp", tmo: "p-tmo", idm: "p-idm", revasc: "p-revasc", syncope: "p-syncope", crt: "p-crt", dfg: "p-dfg", fallot: "p-fallot", hl: "p-hl", tele: "p-tele", naive: "p-naive" };
+const NUMS = new Set(["age", "delai", "fevg"]);
+let activeScenario = 0;
+function readPatient() { const p = {}; Object.entries(FIELDS).forEach(([k, id]) => { const v = $("#" + id).value; p[k] = NUMS.has(k) ? (v === "" ? null : Number(v)) : v; }); return p; }
+function setPatient(p) { const full = Object.assign({}, BASE, p); Object.entries(FIELDS).forEach(([k, id]) => { $("#" + id).value = full[k] === null ? "" : String(full[k]); }); }
+function centreHas(s, centre) { if (!centre || !s.centresKey || !CENTRES) return null; return (CENTRES[s.centresKey] || []).includes(centre); }
+function evaluate(p, centre) {
+  return STUDIES.map(s => {
+    const res = s.crit.map(c => ({ c, v: c.test(p) }));
+    const fails = res.filter(x => x.v === F), unknown = res.filter(x => x.v === U), manual = res.filter(x => x.v === M);
+    const momentOk = s.moment === p.moment;
+    const closed = s.registry.status === "COMPLETED" && !s.source.open;
+    let status;
+    if (closed) status = "closed";
+    else if (!momentOk || fails.length) status = "crit";
+    else if (unknown.length) status = "warn";
+    else status = "ok";
+    return { s, res, fails, unknown, manual, momentOk, closed, status, inCentre: centreHas(s, centre) };
+  });
+}
+function critLine(s, x) {
+  const sym = x.v === T ? ["t", "✓", "rempli"] : x.v === F ? ["f", "✗", "non rempli"] : x.v === U ? ["u", "?", "information manquante"] : ["m", "·", "à confirmer par l'investigateur"];
+  const src = s.source.type === "site" ? `<span class="prov site">dai-pp.com</span>` : `<a href="${ctUrl(s.registry.nct)}" target="_blank" rel="noopener" class="prov reg">${s.registry.nct} · ${esc(x.c.c)}</a>`;
+  const interp = INTERP.find(i => i.rule === `${s.name} ${x.c.c}`);
+  return `<li><span class="mark ${sym[0]}" aria-label="${sym[2]}">${sym[1]}</span><span>${esc(x.c.fr)}<br>
+    <span class="src">${src} ${x.v === M ? "· à confirmer par l'investigateur" : ""}</span>
+    <details class="orig"><summary>Texte original</summary><p>${esc(x.c.en)}</p></details>
+    ${interp ? `<span class="small">Point d'interprétation : <button class="linkbtn" type="button" data-goint="${interp.id}">${interp.id}</button></span>` : ""}</span></li>`;
+}
+function renderScenarios() {
+  $("#scenarios").innerHTML = SCENARIOS.map((sc, i) => `<button class="btn" type="button" data-sc="${i}" aria-pressed="${i === activeScenario}">${esc(sc.label)}</button>`).join("");
+  document.querySelectorAll("[data-sc]").forEach(b => b.addEventListener("click", () => {
+    activeScenario = Number(b.dataset.sc); const sc = SCENARIOS[activeScenario];
+    setPatient(sc.p); $("#p-centre").value = sc.centre; renderScenarios(); renderResults();
+  }));
+}
+function renderResults() {
+  const p = readPatient(), centre = $("#p-centre").value;
+  const ev = evaluate(p, centre);
+  const ok = ev.filter(e => e.status === "ok"), warn = ev.filter(e => e.status === "warn"), other = ev.filter(e => e.status === "crit" || e.status === "closed");
+  const live = new Set([...ok, ...warn].map(e => e.s.id));
+  let h = `<div class="summary">
+    <div class="s"><span class="v" style="color:var(--ok)">${ok.length}</span><span class="l">Pré-éligible(s)</span></div>
+    <div class="s"><span class="v" style="color:var(--warn)">${warn.length}</span><span class="l">Information manquante</span></div>
+    <div class="s"><span class="v">${other.length}</span><span class="l">Non concernée(s) ou close(s)</span></div></div>`;
+  CONFLICTS.filter(c => live.has(c.a) && live.has(c.b)).forEach(c => {
+    h += `<div class="alert crit"><strong>Co-inclusion à arbitrer : ${esc(BY[c.a].name)} et ${esc(BY[c.b].name)}</strong><span>${esc(c.text)}</span><span class="small">Source : critères publiés ${esc(c.refs.join(", "))}. Décision de l'investigateur.</span></div>`;
+  });
+  const heroEv = ev.find(e => e.s.id === "HERO");
+  if (heroEv && heroEv.status !== "crit" && heroEv.status !== "closed" && p.delai !== null && p.delai < 6) {
+    h += `<div class="alert info"><strong>Fenêtre d'inclusion HERO</strong><span>Implanté depuis ${p.delai} mois : la fenêtre se ferme dans environ ${6 - p.delai} mois (critère publié I2 : implantation depuis moins de 6 mois).</span></div>`;
+  }
+  if (p.moment === "avant" && [...ok, ...warn].some(e => e.s.kind === "Essai randomisé"))
+    h += `<div class="alert info"><strong>À proposer avant l'implantation</strong><span>DILEMMA et PROFID EHRA randomisent le fait d'implanter ou non un DAI : la proposition se fait avant le geste.</span></div>`;
+  if (!ok.length && !warn.length) h += `<div class="alert warn"><strong>Aucune étude ouverte ne correspond</strong><span>Vérifiez le moment, le dispositif et l'indication saisis.</span></div>`;
+  [...ok, ...warn, ...other].forEach(e => {
+    const s = e.s;
+    const pill = e.status === "ok" ? '<span class="pill ok">Pré-éligible</span>' : e.status === "warn" ? '<span class="pill warn">Information manquante</span>' : e.status === "closed" ? '<span class="pill neutral">Close (registre)</span>' : '<span class="pill neutral">Non concernée</span>';
+    const centreLine = e.inCentre === true ? `<span class="pill ok">Votre centre participe</span>` : e.inCentre === false ? `<span class="pill warn">Centre absent de la liste publique</span>` : "";
+    const momentLine = !e.momentOk ? `<div class="actions">Inclusion prévue ${s.moment === "avant" ? "<strong>avant</strong>" : "<strong>après</strong>"} l'implantation pour cette étude.</div>` : "";
+    const incl = e.res.filter(x => x.c.inc), excl = e.res.filter(x => !x.c.inc);
+    h += `<details class="study ${e.status}" ${e.status === "ok" || e.status === "warn" ? "open" : ""}>
+      <summary><span><span class="name">${esc(s.name)}</span> <span class="small muted">· ${esc(s.kind)}</span></span>${pill}<span class="desc">${esc(s.desc)}</span></summary>
+      <div class="body">
+        <div class="row">${centreLine}<span class="small muted">${s.source.type === "site" ? "Source : dai-pp.com" : `Registre <a href="${ctUrl(s.registry.nct)}" target="_blank" rel="noopener">${s.registry.nct}</a> · ${esc(STATUS_FR[s.registry.status] || s.registry.status)}`}</span></div>
+        ${momentLine}
+        <div class="sub">Critères d'inclusion</div><ul class="crits">${incl.map(x => critLine(s, x)).join("")}</ul>
+        ${excl.length ? `<div class="sub">Critères de non-inclusion</div><ul class="crits">${excl.map(x => critLine(s, x)).join("")}</ul>` : ""}
+        ${e.status === "ok" ? `<div class="actions"><strong>Avant d'inclure</strong><span>${e.manual.length} critère(s) à confirmer par l'investigateur (marqués « · »).</span><span>Utiliser la notice et le formulaire de consentement de la version du protocole en vigueur dans le centre.</span></div>` : ""}
+        ${e.status === "warn" ? `<div class="actions"><strong>Information manquante</strong>${e.unknown.map(x => `<span>• ${esc(x.c.fr)}</span>`).join("")}</div>` : ""}
+      </div></details>`;
+  });
+  $("#results").innerHTML = h;
+  document.querySelectorAll("[data-goint]").forEach(b => b.addEventListener("click", () => openInterp(b.dataset.goint)));
+}
+
+/* ---------- Registres ---------- */
+function monthsBetween(a, b) { return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth()); }
+function pdate(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
+function fdate(s) { const p = s.split("-"); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : `${p[1]}/${p[0]}`; }
+function regFlags(s) {
+  const r = s.registry, f = [];
+  if (r.status === "UNKNOWN") f.push("Statut « inconnu » : ClinicalTrials.gov l'affiche quand une étude a dépassé sa date de fin prévue sans que son statut ait été vérifié depuis plus de 2 ans.");
+  if (r.status === "RECRUITING" && pdate(r.pcd) < TODAY) f.push(`Recrutement affiché, mais la date de fin principale (${fdate(r.pcd)}) est dépassée.`);
+  const age = monthsBetween(pdate(r.last), TODAY);
+  if (r.status !== "COMPLETED" && age > 12) f.push(`Dernière mise à jour il y a ${age} mois (${fdate(r.last)}).`);
+  if (r.note) f.push(r.note);
+  return f;
+}
+function renderRegistres() {
+  let n = 0;
+  $("#reg-cards").innerHTML = STUDIES.map(s => {
+    const r = s.registry, flags = regFlags(s); if (flags.length && !r.note) n++; else if (flags.length > 1) n++;
+    return `<article class="reg"><div class="row spread"><h3>${esc(r.title || s.name)}</h3><span class="pill ${r.status === "RECRUITING" ? "ok" : r.status === "UNKNOWN" ? "warn" : "neutral"}">${esc(STATUS_FR[r.status] || r.status)}</span></div>
+      <dl><dt>Registre</dt><dd><a href="${ctUrl(r.nct)}" target="_blank" rel="noopener">${r.nct}</a></dd>
+      <dt>Type</dt><dd>${esc(r.type)}</dd><dt>Début</dt><dd>${fdate(r.start)}</dd><dt>Fin principale</dt><dd>${fdate(r.pcd)}</dd>
+      <dt>Mise à jour</dt><dd>${fdate(r.last)}</dd><dt>Effectif</dt><dd>${esc(r.enrollment)}</dd><dt>Sites en France</dt><dd>${r.frSites}</dd>
+      <dt>Centres DAI-PP</dt><dd>${s.centresKey && CENTRES ? (CENTRES[s.centresKey] || []).length : "—"}</dd><dt>Suivi</dt><dd>${esc(r.followup)}</dd></dl>
+      ${flags.length ? flags.map(t => `<div class="flag">${esc(t)}</div>`).join("") : `<div class="flag okf">Aucune incohérence détectée.</div>`}
+      ${s.centresKey && CENTRES && r.frSites && (CENTRES[s.centresKey] || []).length > r.frSites * 3 ? `<div class="flag">Le registre déclare ${r.frSites} site(s) ; dai-pp.com en liste ${(CENTRES[s.centresKey] || []).length}. Les centres participants ne figurent pas sur la fiche publique.</div>` : ""}
+    </article>`;
+  }).join("");
+  const toCheck = STUDIES.filter(s => regFlags(s).some(t => !s.registry.note || t !== s.registry.note)).length;
+  $("#reg-count").textContent = toCheck || "";
+}
+
+/* ---------- Interprétation ---------- */
+let intFilter = "all", highlight = null;
+const STOP = new Set("le la les un une des de du d l à a au aux et ou est il elle on en pour par dans sur avec sans que qui quoi peut peuvent doit doivent ce cet cette ces se sa son ses leur leurs ne pas plus y t s qu patient patients etude".split(" "));
+function words(s) { return new Set(String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]+/g, " ").split(" ").filter(w => w.length > 2 && !STOP.has(w))); }
+function similarity(a, b) { const A = words(a), B = words(b); if (!A.size || !B.size) return 0; let n = 0; A.forEach(w => { if (B.has(w) || [...B].some(x => x.length > 4 && w.length > 4 && x.slice(0, 5) === w.slice(0, 5))) n++; }); return n / Math.min(A.size, B.size); }
+function renderIntFilters() {
+  const ids = ["all", ...new Set(INTERP.map(i => i.study))];
+  $("#c-filter").innerHTML = ids.map(i => `<button class="btn" type="button" data-cf="${i}" aria-pressed="${intFilter === i}">${i === "all" ? "Tout" : esc(BY[i].name)}</button>`).join("");
+  document.querySelectorAll("[data-cf]").forEach(b => b.addEventListener("click", () => { intFilter = b.dataset.cf; renderIntFilters(); renderInterp(); }));
+}
+function renderInterp() {
+  const q = $("#c-search").value.trim();
+  let list = INTERP.filter(i => intFilter === "all" || i.study === intFilter);
+  if (q) list = list.filter(i => (i.q + " " + i.a + " " + i.rule).toLowerCase().includes(q.toLowerCase()) || similarity(q, i.q + " " + i.a) >= 0.5);
+  const mine = USERQ.filter(u => intFilter === "all" || u.study === intFilter);
+  $("#c-list").innerHTML = (mine.length ? `<div class="label">Vos questions (dans ce navigateur)</div>` + mine.map(u => `<article class="clar ${highlight === u.id ? "hl" : ""}" id="int-${esc(u.id)}"><div class="meta"><span class="rid">${esc(u.id)}</span><span>${esc(u.study === "all" ? "Toutes les études" : BY[u.study].name)}</span><span class="pill warn">Sans réponse</span></div><p class="q">${esc(u.q)}</p><p class="small muted">À transmettre à la coordination. La réponse validée deviendra un point d'interprétation partagé.</p></article>`).join("") : "")
+    + (list.length ? list.map(i => {
+      const s = BY[i.study];
+      return `<article class="clar ${highlight === i.id ? "hl" : ""}" id="int-${i.id}">
+        <div class="meta"><span class="rid">${i.id}</span><span>${esc(s.name)}</span><a class="prov reg" href="${ctUrl(s.registry.nct)}" target="_blank" rel="noopener">${esc(i.rule.replace(s.name, s.registry.nct))}</a></div>
+        <p class="q">${esc(i.q)}</p><p>${esc(i.a)}</p><p class="quote">« ${esc(i.quote)} »</p></article>`;
+    }).join("") : `<p class="muted">Aucun point ne correspond.</p>`);
+}
+function openInterp(id) { highlight = id; intFilter = "all"; $("#c-search").value = ""; go("interpretation"); renderIntFilters(); renderInterp(); const el = document.getElementById("int-" + id); if (el) el.scrollIntoView({ block: "center" }); }
+function renderMatch() {
+  const t = $("#cq-text").value.trim(), box = $("#cq-match");
+  if (t.length < 12) { box.innerHTML = ""; return; }
+  const st = $("#cq-study").value;
+  const scored = INTERP.filter(i => st === "all" || i.study === st).map(i => ({ i, s: similarity(t, i.q + " " + i.a) })).filter(x => x.s >= 0.34).sort((a, b) => b.s - a.s).slice(0, 2);
+  box.innerHTML = scored.length ? `<div class="match"><strong>Le texte publié répond peut-être déjà</strong>${scored.map(x => `<div><span class="rid">${x.i.id}</span> ${esc(x.i.q)}<br><span class="small">${esc(x.i.a)}</span></div>`).join("")}</div>` : "";
+}
+function saveQuestion() {
+  const t = $("#cq-text").value.trim(), msg = $("#cq-msg");
+  if (t.length < 12) { msg.textContent = "Rédigez une question d'au moins quelques mots."; return; }
+  const id = "Q-" + String(USERQ.length + 1).padStart(2, "0");
+  USERQ.unshift({ id, study: $("#cq-study").value, q: t, date: new Date().toISOString().slice(0, 10) });
+  try { localStorage.setItem(USER_KEY, JSON.stringify(USERQ)); msg.textContent = `Question ${id} enregistrée dans ce navigateur.`; }
+  catch (e) { msg.textContent = `Question ${id} ajoutée pour cette session (stockage du navigateur indisponible).`; }
+  $("#cq-text").value = ""; renderMatch(); highlight = id; intFilter = "all"; renderIntFilters(); renderInterp();
+}
+
+/* ---------- Suivi (patients synthétiques) ---------- */
+let seed = 20261126;
+function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+function addMonths(d, m) { const x = new Date(d); x.setMonth(x.getMonth() + m); return x; }
+function fd(d) { return d.toLocaleDateString("fr-FR"); }
+const SYN = [];
+[["DAIPP", 6], ["HONEST", 3], ["DILEMMA", 3], ["HERO", 3], ["AVCESAR", 2], ["T4F", 1]].forEach(([sid, n]) => {
+  for (let i = 0; i < n; i++) {
+    const s = BY[sid];
+    const span = Math.max(3, Math.min((s.followMonths || 24) + 6, 60));
+    const inc = addMonths(TODAY, -Math.floor(rnd() * span) - 1);
+    SYN.push({ code: "SYN-" + String(SYN.length + 1).padStart(3, "0"), sid, inc, silent: Math.floor(rnd() * 220) });
+  }
+});
+function buildSignals() {
+  const out = [];
+  SYN.forEach(p => {
+    const s = BY[p.sid];
+    if (s.followMonths) {
+      const end = addMonths(p.inc, s.followMonths), days = Math.round((end - TODAY) / 864e5);
+      if (days < 0) out.push({ p, sev: "warn", text: `Suivi du critère principal terminé (${s.followMonths} mois après l'inclusion)`, due: fd(end), prov: ["reg", s.followSrc], action: "Vérifier que toutes les données du critère principal sont saisies, puis clôturer le suivi." });
+      else if (days <= 60) out.push({ p, sev: "info", text: `Fin du suivi principal dans ${days} jours`, due: fd(end), prov: ["reg", s.followSrc], action: "Planifier le dernier contact de suivi et vérifier la complétude." });
+    }
+    if (p.sid === "HERO") {
+      const m = monthsBetween(p.inc, TODAY);
+      if (m < 12) out.push({ p, sev: "info", text: `Évaluation à 12 mois prévue (critère principal)`, due: fd(addMonths(p.inc, 12)), prov: ["reg", "NCT07544771 : critère principal à 12 mois"], action: "Programmer l'évaluation à 12 mois (hospitalisations, qualité de vie)." });
+    }
+    if (p.silent > 90 && ["DAIPP", "HONEST", "HERO", "T4F"].includes(p.sid)) out.push({ p, sev: p.silent > 180 ? "crit" : "warn", text: `Aucune transmission de télécardiologie depuis ${p.silent} jours`, due: "—", prov: ["demo", "Règle de démonstration (seuil de 90 jours non issu d'un protocole)"], action: "Contacter le patient ; vérifier le transmetteur à domicile." });
+  });
+  const order = { crit: 0, warn: 1, info: 2 };
+  return out.sort((a, b) => order[a.sev] - order[b.sev] || a.p.code.localeCompare(b.p.code));
+}
+const SIG = buildSignals(), doneSet = new Set();
+let suiviFilter = "all";
+function renderSuivi() {
+  const studies = ["all", ...new Set(SYN.map(p => p.sid))];
+  $("#s-filter").innerHTML = studies.map(k => `<button class="btn" type="button" data-sf="${k}" aria-pressed="${suiviFilter === k}">${k === "all" ? "Toutes les études" : esc(BY[k].name)}</button>`).join("");
+  document.querySelectorAll("[data-sf]").forEach(b => b.addEventListener("click", () => { suiviFilter = b.dataset.sf; renderSuivi(); }));
+  const rows = SIG.filter(x => suiviFilter === "all" || x.p.sid === suiviFilter);
+  const open = SIG.filter(x => !doneSet.has(x.p.code + x.text)).length;
+  $("#s-meta").textContent = `${open} action(s) ouverte(s) · ${SYN.length} patients synthétiques`;
+  $("#s-body").innerHTML = rows.map(x => {
+    const key = x.p.code + x.text, done = doneSet.has(key);
+    return `<tr class="${done ? "done" : ""}"><td class="sev ${x.sev}"></td>
+      <td class="keep"><input type="checkbox" data-done="${esc(key)}" aria-label="Action faite pour ${esc(x.p.code)}" ${done ? "checked" : ""}></td>
+      <td class="mono">${esc(x.p.code)}<br><span class="small muted">inclus le ${fd(x.p.inc)}</span></td><td>${esc(BY[x.p.sid].name)}</td><td>${esc(x.text)}</td><td class="mono">${esc(x.due)}</td>
+      <td class="keep"><span class="prov ${x.prov[0]}">${x.prov[0] === "reg" ? "Registre public" : "Démonstration"}</span><br><span class="small muted">${esc(x.prov[1])}</span></td><td>${esc(x.action)}</td></tr>`;
+  }).join("");
+  document.querySelectorAll("[data-done]").forEach(c => c.addEventListener("change", () => { c.checked ? doneSet.add(c.dataset.done) : doneSet.delete(c.dataset.done); renderSuivi(); }));
+}
+
+/* ---------- Règles ---------- */
+function renderRules() {
+  const q = $("#r-search").value.trim().toLowerCase();
+  const rows = [];
+  STUDIES.forEach(s => s.crit.forEach(c => {
+    const auto = c.test(BASE) !== M;
+    rows.push({ id: `${s.name} ${c.c}`, study: s.name, fr: c.fr, en: c.en, auto, src: s.source.type === "site" ? ["site", "dai-pp.com", "https://dai-pp.com/studies"] : ["reg", s.registry.nct, ctUrl(s.registry.nct)] });
+  }));
+  const shown = rows.filter(r => !q || (r.id + " " + r.fr + " " + r.en).toLowerCase().includes(q));
+  $("#r-meta").textContent = `${shown.length} règle(s) · ${rows.filter(r => r.auto).length} vérifiables automatiquement, ${rows.filter(r => !r.auto).length} à confirmer par l'investigateur`;
+  $("#r-body").innerHTML = shown.map(r => `<tr><td><span class="rid">${esc(r.id)}</span></td><td>${esc(r.study)}</td><td>${esc(r.fr)}<details class="orig"><summary>Texte original</summary><p>${esc(r.en)}</p></details></td>
+    <td>${r.auto ? '<span class="pill ok">Automatique</span>' : '<span class="pill neutral">Investigateur</span>'}</td>
+    <td><a class="prov ${r.src[0]}" href="${r.src[2]}" target="_blank" rel="noopener">${esc(r.src[1])}</a></td></tr>`).join("");
+}
+
+/* ---------- Navigation ---------- */
+const VIEWS = ["inclusion", "registres", "interpretation", "suivi", "regles"];
+let view = "inclusion";
+function go(v) {
+  view = v;
+  VIEWS.forEach(x => { $("#view-" + x).hidden = x !== v; });
+  document.querySelectorAll(".tab").forEach(t => t.dataset.view === v ? t.setAttribute("aria-current", "page") : t.removeAttribute("aria-current"));
+  if (location.hash.slice(1) !== v) { try { history.replaceState(null, "", "#" + v); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => { highlight = null; go(t.dataset.view); renderInterp(); }));
+window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS.includes(v) && v !== view) go(v); });
+
+/* ---------- Démarrage ---------- */
+const allCentres = CENTRES ? [...new Set(Object.values(CENTRES).flat())].sort((a, b) => a.localeCompare(b, "fr")) : [];
+$("#p-centre").innerHTML = `<option value="">Non précisé</option>` + allCentres.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+$("#cq-study").innerHTML = `<option value="all">Toutes les études</option>` + STUDIES.filter(s => s.registry.status !== "COMPLETED").map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
+$("#src-list").innerHTML = STUDIES.filter(s => s.registry.nct).map(s => `<li>${esc(s.name)} : <a href="${ctUrl(s.registry.nct)}" target="_blank" rel="noopener">clinicaltrials.gov/study/${s.registry.nct}</a></li>`).join("");
+$("#patient-form").addEventListener("input", ev => { if (ev.target.id !== "p-centre") { activeScenario = -1; renderScenarios(); } renderResults(); });
+$("#patient-form").addEventListener("change", renderResults);
+$("#c-search").addEventListener("input", () => { highlight = null; renderInterp(); });
+$("#cq-text").addEventListener("input", renderMatch);
+$("#cq-study").addEventListener("change", renderMatch);
+$("#cq-send").addEventListener("click", saveQuestion);
+$("#r-search").addEventListener("input", renderRules);
+setPatient(SCENARIOS[0].p); $("#p-centre").value = SCENARIOS[0].centre;
+renderScenarios(); renderResults(); renderRegistres(); renderIntFilters(); renderInterp(); renderSuivi(); renderRules();
+const h0 = location.hash.slice(1); go(VIEWS.includes(h0) ? h0 : "inclusion");
+})();
+</script>

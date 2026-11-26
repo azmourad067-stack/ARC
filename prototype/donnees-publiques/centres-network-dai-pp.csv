@@ -1,0 +1,362 @@
+AV-CESAR,Paris,Institut Mutualiste Montsouris,75000
+FOREVER,Paris,Institut Mutualiste Montsouris,75000
+HONEST,Paris,Institut Mutualiste Montsouris,75000
+HONEST,Paris,Hôpital Saint-Joseph,75000
+HONEST,Paris,Clinique Alleray Labrouste,75000
+PROFID EHRA,Paris,Hôpital européen Georges-Pompidou,75000
+HERO,Paris,Hôpital européen Georges-Pompidou,75000
+DILEMMA,Paris,Hôpital européen Georges-Pompidou,75000
+Cohorte DAI-PP,Paris,Hôpital européen Georges-Pompidou,75000
+AV-CESAR,Paris,Hôpital européen Georges-Pompidou,75000
+DAI-T4F,Paris,Hôpital européen Georges-Pompidou,75000
+FOREVER,Paris,Hôpital européen Georges-Pompidou,75000
+HONEST,Paris,Hôpital européen Georges-Pompidou,75000
+PROFID EHRA,Paris,Hôpital de la Pitié Salpêtrière,75000
+HERO,Paris,Hôpital de la Pitié Salpêtrière,75000
+DILEMMA,Paris,Hôpital de la Pitié Salpêtrière,75000
+Cohorte DAI-PP,Paris,Hôpital de la Pitié Salpêtrière,75000
+AV-CESAR,Paris,Hôpital de la Pitié Salpêtrière,75000
+DAI-T4F,Paris,Hôpital de la Pitié Salpêtrière,75000
+FOREVER,Paris,Hôpital de la Pitié Salpêtrière,75000
+HONEST,Paris,Hôpital de la Pitié Salpêtrière,75000
+PROFID EHRA,Paris,Hôpital Bichat - Claude-Bernard,75000
+DILEMMA,Paris,Hôpital Bichat - Claude-Bernard,75000
+Cohorte DAI-PP,Paris,Hôpital Bichat - Claude-Bernard,75000
+AV-CESAR,Paris,Hôpital Bichat - Claude-Bernard,75000
+DAI-T4F,Paris,Hôpital Bichat - Claude-Bernard,75000
+FOREVER,Paris,Hôpital Bichat - Claude-Bernard,75000
+HONEST,Paris,Hôpital Bichat - Claude-Bernard,75000
+FOREVER,Paris,Hôpital Necker - Enfants malades,75000
+HONEST,Paris,Hôpital Necker - Enfants malades,75000
+DAI-T4F,Paris,Hôptal Lariboisière,75018
+PROFID EHRA,Marseille,CHU Marseille - La Timone,13000
+HERO,Marseille,CHU Marseille - La Timone,13000
+DILEMMA,Marseille,CHU Marseille - La Timone,13000
+Cohorte DAI-PP,Marseille,CHU Marseille - La Timone,13000
+AV-CESAR,Marseille,CHU Marseille - La Timone,13000
+DAI-T4F,Marseille,CHU Marseille - La Timone,13000
+FOREVER,Marseille,CHU Marseille - La Timone,13000
+HONEST,Marseille,CHU Marseille - La Timone,13000
+HONEST,Marseille,CHU Marseille - Hôpital Nord,13000
+HONEST,Marseille,Hôpital Privé Marseille - Beauregard,13000
+AV-CESAR,Marseille,Hôpital privé Clairval,13000
+FOREVER,Marseille,Hôpital privé Clairval,13000
+HONEST,Marseille,Hôpital privé Clairval,13000
+AV-CESAR,Marseille,Hôpital Saint Joseph,13000
+DAI-T4F,Marseille,Hôpital Saint Joseph,13000
+FOREVER,Marseille,Hôpital Saint Joseph,13000
+HONEST,Marseille,Hôpital Saint Joseph,13000
+DILEMMA,Lille,Hôpital Saint Philibert - GHICL,59000
+Cohorte DAI-PP,Lille,Hôpital Saint Philibert - GHICL,59000
+HONEST,Lille,Hôpital Saint Philibert - GHICL,59000
+HERO,Lille,CHU de Lille,59000
+AV-CESAR,Lille,CHU de Lille,59000
+DAI-T4F,Lille,CHU de Lille,59000
+FOREVER,Lille,CHU de Lille,59000
+HONEST,Lille,CHU de Lille,59000
+HONEST,Lille,Hôpital privé Le Bois,59000
+AV-CESAR,Lille,Hôpital privé - Lille Metropole,59000
+FOREVER,Lille,Hôpital privé - Lille Metropole,59000
+FOREVER,Lyon,Clinique de l'Infirmerie Protestante de Lyon,69000
+HONEST,Lyon,Clinique de l'Infirmerie Protestante de Lyon,69000
+HONEST,Lyon,Centre Hospitalier Saint Joseph Saint Luc,69000
+HONEST,Lyon,Hôpital de la Croix-Rousse,69000
+PROFID EHRA,Lyon,Hospices Civils de Lyon - GH Est-Hôpital Louis Pradel - CHU,69500
+DAI-T4F,Lyon,Hospices Civils de Lyon - GH Est-Hôpital Louis Pradel - CHU,69500
+FOREVER,Lyon,Hospices Civils de Lyon - GH Est-Hôpital Louis Pradel - CHU,69500
+HONEST,Lyon,Hospices Civils de Lyon - GH Est-Hôpital Louis Pradel - CHU,69500
+HONEST,Lyon,Clinique du Tonkin,69100
+HONEST,Lyon,Polyclinique Lyon-Nord,69140
+FOREVER,Lyon,Gcs Medipole,69003
+AV-CESAR,Lyon,Groupement ADRIS,69003
+HONEST,Toulon,Polyclinique Les Fleurs,83000
+HONEST,Toulon,Centre Hospitalier Toulon,83000
+HONEST,Toulon,Hôpital d'instruction des armées Sainte-Anne,83000
+PROFID EHRA,Amiens,CHU Amiens,80000
+HERO,Amiens,CHU Amiens,80000
+DILEMMA,Amiens,CHU Amiens,80000
+Cohorte DAI-PP,Amiens,CHU Amiens,80000
+AV-CESAR,Amiens,CHU Amiens,80000
+DAI-T4F,Amiens,CHU Amiens,80000
+FOREVER,Amiens,CHU Amiens,80000
+HONEST,Amiens,CHU Amiens,80000
+HONEST,Amiens,SAS Cardiologie et Urgences,80000
+HONEST,Avignon,Centre Hospitalier d'Avignon,84000
+HONEST,Avignon,Clinique Rhône Durance,84000
+PROFID EHRA,Besançon,CHU Besançon,25000
+AV-CESAR,Besançon,CHU Besançon,25000
+DAI-T4F,Besançon,CHU Besançon,25000
+FOREVER,Besançon,CHU Besançon,25000
+HONEST,Besançon,CHU Besançon,25000
+HONEST,Besançon,Clinique Saint Vincent,25000
+PROFID EHRA,Bordeaux,CHU de Bordeaux,33000
+AV-CESAR,Bordeaux,CHU de Bordeaux,33000
+DAI-T4F,Bordeaux,CHU de Bordeaux,33000
+FOREVER,Bordeaux,CHU de Bordeaux,33000
+HONEST,Bordeaux,CHU de Bordeaux,33000
+FOREVER,Bordeaux,Clinique Saint Augustin,33000
+HONEST,Bordeaux,Clinique Saint Augustin,33000
+HONEST,Boulogne-sur-Mer,Centre Médical Chirurgical Obstétrical de la Côte d'Opale,62200
+HONEST,Boulogne-sur-Mer,Centre Hospitalier de Boulogne sur Mer,62200
+HERO,Caen,CHU de Caen,14000
+AV-CESAR,Caen,CHU de Caen,14000
+DAI-T4F,Caen,CHU de Caen,14000
+FOREVER,Caen,CHU de Caen,14000
+HONEST,Caen,CHU de Caen,14000
+AV-CESAR,Caen,Hôpital privé Saint-Martin,14000
+FOREVER,Caen,Hôpital privé Saint-Martin,14000
+HONEST,Caen,Hôpital privé Saint-Martin,14000
+HONEST,Clamart,Hôpital Antoine-Béclère,92140
+HONEST,Clamart,Hôpital d'Instruction des Armées - Percy,92140
+AV-CESAR,Clermont-Ferrand,CHU Clermont- Ferrand,63000
+DAI-T4F,Clermont-Ferrand,CHU Clermont- Ferrand,63000
+FOREVER,Clermont-Ferrand,CHU Clermont- Ferrand,63000
+HONEST,Clermont-Ferrand,CHU Clermont- Ferrand,63000
+HONEST,Clermont-Ferrand,Pôle Santé République,63000
+PROFID EHRA,Grenoble,CHU Grenoble,38000
+HERO,Grenoble,CHU Grenoble,38000
+DILEMMA,Grenoble,CHU Grenoble,38000
+Cohorte DAI-PP,Grenoble,CHU Grenoble,38000
+AV-CESAR,Grenoble,CHU Grenoble,38000
+DAI-T4F,Grenoble,CHU Grenoble,38000
+FOREVER,Grenoble,CHU Grenoble,38000
+HONEST,Grenoble,CHU Grenoble,38000
+HONEST,Grenoble,Clinique Belledonne,38000
+DAI-T4F,Le Mans,Centre Hospitalier du Mans,72000
+HONEST,Le Mans,Centre Hospitalier du Mans,72000
+HONEST,Le Mans,Pôle Santé Sud,72000
+FOREVER,Metz,CHR Metz - Thionville,57000
+HONEST,Metz,CHR Metz - Thionville,57000
+HONEST,Metz,Clinique Claude Bernard,57000
+DAI-T4F,Monaco,Centre Hospitalier Princesse Grace,98000
+HONEST,Monaco,Centre Hospitalier Princesse Grace,98000
+AV-CESAR,Monaco,Centre Cardio-Thoracique de Monaco,98000
+FOREVER,Monaco,Centre Cardio-Thoracique de Monaco,98000
+HONEST,Monaco,Centre Cardio-Thoracique de Monaco,98000
+AV-CESAR,Montpellier,Clinique du Millénaire,34000
+FOREVER,Montpellier,Clinique du Millénaire,34000
+HONEST,Montpellier,Clinique du Millénaire,34000
+AV-CESAR,Montpellier,CHU de Montpellier,34000
+DAI-T4F,Montpellier,CHU de Montpellier,34000
+FOREVER,Montpellier,CHU de Montpellier,34000
+HONEST,Montpellier,CHU de Montpellier,34000
+HONEST,Montpellier,Clinique du Parc - Castelnau le Lez,34170
+HONEST,Nancy,Clinique Ambroise Paré,54000
+DILEMMA,Nancy,CHU de Nancy,54000
+Cohorte DAI-PP,Nancy,CHU de Nancy,54000
+AV-CESAR,Nancy,CHU de Nancy,54000
+DAI-T4F,Nancy,CHU de Nancy,54000
+FOREVER,Nancy,CHU de Nancy,54000
+HONEST,Nancy,CHU de Nancy,54000
+HONEST,Nancy,Clinique Louis Pasteur,54270
+HERO,Nantes,CHU de Nantes,44000
+DILEMMA,Nantes,CHU de Nantes,44000
+Cohorte DAI-PP,Nantes,CHU de Nantes,44000
+AV-CESAR,Nantes,CHU de Nantes,44000
+DAI-T4F,Nantes,CHU de Nantes,44000
+FOREVER,Nantes,CHU de Nantes,44000
+HONEST,Nantes,CHU de Nantes,44000
+HERO,Nantes,Hôpital privé du Confluent,44000
+Cohorte DAI-PP,Nantes,Hôpital privé du Confluent,44000
+HONEST,Nantes,Hôpital privé du Confluent,44000
+HONEST,Nice,CHU Nice,06000
+HONEST,Nice,Clinique Saint Georges,06000
+DAI-T4F,Nîmes,CHU de Nîmes,30000
+HONEST,Nîmes,CHU de Nîmes,30000
+AV-CESAR,Nîmes,Hôpital Privé Les Franciscaines,30000
+DAI-T4F,Nîmes,Hôpital Privé Les Franciscaines,30000
+FOREVER,Nîmes,Hôpital Privé Les Franciscaines,30000
+HONEST,Nîmes,Hôpital Privé Les Franciscaines,30000
+DAI-T4F,Perpignan,Clinique Saint Pierre,66000
+FOREVER,Perpignan,Clinique Saint Pierre,66000
+HONEST,Perpignan,Clinique Saint Pierre,66000
+AV-CESAR,Perpignan,Centre Hospitalier de Perpignan,66000
+HONEST,Perpignan,Centre Hospitalier de Perpignan,66000
+PROFID EHRA,Rennes,CHU Rennes,35000
+DILEMMA,Rennes,CHU Rennes,35000
+Cohorte DAI-PP,Rennes,CHU Rennes,35000
+AV-CESAR,Rennes,CHU Rennes,35000
+DAI-T4F,Rennes,CHU Rennes,35000
+FOREVER,Rennes,CHU Rennes,35000
+HONEST,Rennes,CHU Rennes,35000
+HONEST,Rennes,Polyclinique Saint Laurent,35000
+HERO,Rouen,CHU de Rouen,76000
+DILEMMA,Rouen,CHU de Rouen,76000
+Cohorte DAI-PP,Rouen,CHU de Rouen,76000
+AV-CESAR,Rouen,CHU de Rouen,76000
+DAI-T4F,Rouen,CHU de Rouen,76000
+FOREVER,Rouen,CHU de Rouen,76000
+HONEST,Rouen,CHU de Rouen,76000
+HONEST,Rouen,Clinique Saint-Hilaire,76000
+DAI-T4F,Saint-Étienne,CHU de Saint Etienne,42000
+FOREVER,Saint-Étienne,CHU de Saint Etienne,42000
+HONEST,Saint-Étienne,CHU de Saint Etienne,42000
+HONEST,Saint-Étienne,Hôpital Privé de la Loire- Saint Etienne,42000
+HONEST,Strasbourg,Clinique de l'Orangerie,67000
+DILEMMA,Strasbourg,CHU de Strasbourg,67000
+Cohorte DAI-PP,Strasbourg,CHU de Strasbourg,67000
+AV-CESAR,Strasbourg,CHU de Strasbourg,67000
+FOREVER,Strasbourg,CHU de Strasbourg,67000
+HONEST,Strasbourg,CHU de Strasbourg,67000
+HONEST,Tarbes,Centre Hospitalier de Bigorre,65000
+HONEST,Tarbes,Polyclinique de l'Ormeau,65000
+PROFID EHRA,Toulouse,CHU de Toulouse,31000
+HERO,Toulouse,CHU de Toulouse,31000
+AV-CESAR,Toulouse,CHU de Toulouse,31000
+DAI-T4F,Toulouse,CHU de Toulouse,31000
+FOREVER,Toulouse,CHU de Toulouse,31000
+HONEST,Toulouse,CHU de Toulouse,31000
+PROFID EHRA,Toulouse,Clinique Pasteur,31000
+HERO,Toulouse,Clinique Pasteur,31000
+DILEMMA,Toulouse,Clinique Pasteur,31000
+Cohorte DAI-PP,Toulouse,Clinique Pasteur,31000
+AV-CESAR,Toulouse,Clinique Pasteur,31000
+DAI-T4F,Toulouse,Clinique Pasteur,31000
+FOREVER,Toulouse,Clinique Pasteur,31000
+HONEST,Toulouse,Clinique Pasteur,31000
+PROFID EHRA,Tours,CHU de Tours,37000
+HERO,Tours,CHU de Tours,37000
+Cohorte DAI-PP,Tours,CHU de Tours,37000
+AV-CESAR,Tours,CHU de Tours,37000
+DAI-T4F,Tours,CHU de Tours,37000
+FOREVER,Tours,CHU de Tours,37000
+HONEST,Tours,CHU de Tours,37000
+AV-CESAR,Tours,Clinique Saint-Gatien,37000
+FOREVER,Tours,Clinique Saint-Gatien,37000
+HONEST,Tours,Clinique Saint-Gatien,37000
+HONEST,Valenciennes,Polyclinique Vauban,59300
+HONEST,Valenciennes,Centre Hospitalier de Valenciennes,59300
+HONEST,Agen,Clinique Esquirol Saint Hilaire,47000
+DILEMMA,Aix-en-Provence,Centre Hospitalier d’Aix-En-Provence,13100
+Cohorte DAI-PP,Aix-en-Provence,Centre Hospitalier d’Aix-En-Provence,13100
+HONEST,Aix-en-Provence,Centre Hospitalier d’Aix-En-Provence,13100
+HONEST,Albi,Centre Hospitalier d'Albi,81000
+AV-CESAR,Angers,CHU Angers,49000
+FOREVER,Angers,CHU Angers,49000
+HONEST,Angers,CHU Angers,49000
+DAI-T4F,Annecy,Centre Hospitalier Annecy Genevois,74000
+FOREVER,Annecy,Centre Hospitalier Annecy Genevois,74000
+HONEST,Annecy,Centre Hospitalier Annecy Genevois,74000
+HONEST,Antibes,Centre Hospitalier d'Antibes - Juan Les Pins,06600
+HONEST,Aressy,Clinique Cardiologique D'Aressy,64320
+HONEST,Argenteuil,Centre Hospitalier d'Argenteuil,95100
+HONEST,Aurillac,Centre Hospitalier Henri Mondor,15000
+DAI-T4F,Auxerre,Centre Hospitalier d’Auxerre,89000
+HONEST,Auxerre,Centre Hospitalier d’Auxerre,89000
+HONEST,Basse-Terre,Centre Hospitalier de Basse-Terre,97100
+HONEST,Bastia,Centre Hospitalier de Bastia,20200
+HONEST,Bayonne,GCS Cardiologie,64100
+HONEST,Bezannes,Polyclinique Reims-Bezannes-Courlancy,51430
+HONEST,Bois-Bernard,Hôpital privé Bois Bernard,62320
+HONEST,Bourges,Centre Hospitalier Jacques Cœur,18000
+PROFID EHRA,Brest,CHU de Brest,29200
+HERO,Brest,CHU de Brest,29200
+DILEMMA,Brest,CHU de Brest,29200
+AV-CESAR,Brest,CHU de Brest,29200
+DAI-T4F,Brest,CHU de Brest,29200
+FOREVER,Brest,CHU de Brest,29200
+HONEST,Brest,CHU de Brest,29200
+HONEST,Cannes,Centre Hospitalier de Cannes,06400
+HONEST,Carcassonne,Centre Hospitalier de Carcassonne,11000
+HONEST,Castres,Centre Hospitalier Intercommunal Castres-Mazamet,81100
+DAI-T4F,Chalon-sur-Saône,Centre Hospitalier Chalon sur Saône,71100
+HONEST,Chalon-sur-Saône,Centre Hospitalier Chalon sur Saône,71100
+HONEST,Chambéry,Centre Hospitalier de Chambéry,73000
+HONEST,Chartres,Centre Hospitalier de Chartres,28000
+HONEST,Colmar,Groupe Hospitalier du Centre Alsace,68000
+HONEST,Compiègne,Centre Hospitalier de Compiègne,60200
+HONEST,Corbeil-Essonnes,Centre Hospitalier Sud Francilien,91100
+PROFID EHRA,Créteil,Hôpital Henri Mondor,94000
+DILEMMA,Créteil,Hôpital Henri Mondor,94000
+Cohorte DAI-PP,Créteil,Hôpital Henri Mondor,94000
+AV-CESAR,Créteil,Hôpital Henri Mondor,94000
+DAI-T4F,Créteil,Hôpital Henri Mondor,94000
+FOREVER,Créteil,Hôpital Henri Mondor,94000
+HONEST,Créteil,Hôpital Henri Mondor,94000
+AV-CESAR,Dijon,CHU Dijon Bourgogne,21000
+DAI-T4F,Dijon,CHU Dijon Bourgogne,21000
+FOREVER,Dijon,CHU Dijon Bourgogne,21000
+HONEST,Dijon,CHU Dijon Bourgogne,21000
+HONEST,Évreux,Centre Hospitalier Eure-Seine,27000
+PROFID EHRA,Fort-de-France,CHU de la Martinique,97200
+FOREVER,Fort-de-France,CHU de la Martinique,97200
+HONEST,Fort-de-France,CHU de la Martinique,97200
+HONEST,Haguenau,Centre Hospitalier de Haguenau,67500
+HONEST,La Roche-sur-Yon,Centre Hospitalier Départemental Vendée,85000
+DAI-T4F,La Rochelle,Centre Hospitalier de La Rochelle,17000
+HONEST,La Rochelle,Centre Hospitalier de La Rochelle,17000
+AV-CESAR,Le Chesnay-Rocquencourt,Hôpital privé de Parly 2,78150
+DAI-T4F,Le Chesnay-Rocquencourt,Hôpital privé de Parly 2,78150
+HONEST,Le Chesnay-Rocquencourt,Hôpital privé de Parly 2,78150
+HONEST,Le Havre,Groupe Hospitalier du Havre,76600
+DAI-T4F,Le Plessis-Robinson,Hôpital Marie Lannelongue,92350
+FOREVER,Le Plessis-Robinson,Hôpital Marie Lannelongue,92350
+HONEST,Le Plessis-Robinson,Hôpital Marie Lannelongue,92350
+AV-CESAR,Lens,Centre Hospitalier de Lens,62300
+FOREVER,Lens,Centre Hospitalier de Lens,62300
+HONEST,Lens,Centre Hospitalier de Lens,62300
+HONEST,Libourne,Centre Hospitalier Libourne,33500
+AV-CESAR,Limoges,CHU de Limoges,87000
+DAI-T4F,Limoges,CHU de Limoges,87000
+FOREVER,Limoges,CHU de Limoges,87000
+HONEST,Limoges,CHU de Limoges,87000
+DAI-T4F,Lorient,Groupe Hospitalier Bretagne Sud - Hôpital du Scorff,56100
+HONEST,Lorient,Groupe Hospitalier Bretagne Sud - Hôpital du Scorff,56100
+HONEST,Marne-la-Vallée,Grand Hôpital de l'Est Francilien  - Marne-La-Vallée,77127
+AV-CESAR,Massy,Institut Jacques Cartier,91300
+FOREVER,Massy,Institut Jacques Cartier,91300
+HONEST,Massy,Institut Jacques Cartier,91300
+HONEST,Melun,Clinique Les Fontaines,77000
+HONEST,Mont-de-Marsan,Centre Hospitalier de Mont de Marsan,40000
+HONEST,Montauban,Centre Hospitalier de Montauban,82000
+HONEST,Montfermeil,Groupe Hospitalier Intercommunal Le Raincy Montfermeil,93370
+HONEST,Moulins,Centre Hospitalier de Moulins Yzeure,03000
+FOREVER,Mulhouse,Centre Hospitalier - GHRMSA,68100
+HONEST,Mulhouse,Centre Hospitalier - GHRMSA,68100
+AV-CESAR,Neuilly-sur-Seine,Clinique Ambroise Paré,92200
+DAI-T4F,Neuilly-sur-Seine,Clinique Ambroise Paré,92200
+FOREVER,Neuilly-sur-Seine,Clinique Ambroise Paré,92200
+HONEST,Neuilly-sur-Seine,Clinique Ambroise Paré,92200
+HONEST,Nouméa,Centre Hospitalier Territorial- Nouméa,98800
+HONEST,Orléans,Clinique Oreliance,45000
+HONEST,Papeete,Centre hospitalier de la Polynésie française,98713
+DAI-T4F,Pau,Centre Hospitalier de Pau,64000
+HONEST,Pau,Centre Hospitalier de Pau,64000
+HONEST,Périgueux,Centre Hospitalier de Périgueux,24000
+HONEST,Poissy,CHI de Poissy - Saint Germain en Laye,78300
+PROFID EHRA,Poitiers,CHU de Poitiers,86000
+HERO,Poitiers,CHU de Poitiers,86000
+DILEMMA,Poitiers,CHU de Poitiers,86000
+Cohorte DAI-PP,Poitiers,CHU de Poitiers,86000
+AV-CESAR,Poitiers,CHU de Poitiers,86000
+DAI-T4F,Poitiers,CHU de Poitiers,86000
+FOREVER,Poitiers,CHU de Poitiers,86000
+HONEST,Poitiers,CHU de Poitiers,86000
+HONEST,Pontoise,Centre Hospitalier René Dubos,95300
+HONEST,Quincy-sous-Sénart,Hôpital privé Claude Galien,91480
+AV-CESAR,Reims,CHU Reims,51100
+DAI-T4F,Reims,CHU Reims,51100
+FOREVER,Reims,CHU Reims,51100
+HONEST,Reims,CHU Reims,51100
+HONEST,Rodez,Centre Hospitalier Rodez,12000
+HONEST,Roubaix,Centre Hospitalier de Roubaix,59100
+HONEST,Saint-Brieuc,Centre Hospitalier de Saint Brieuc,22000
+PROFID EHRA,Saint-Denis,Centre Cardiologique du Nord,93200
+DILEMMA,Saint-Denis,Centre Cardiologique du Nord,93200
+Cohorte DAI-PP,Saint-Denis,Centre Cardiologique du Nord,93200
+FOREVER,Saint-Denis,Centre Cardiologique du Nord,93200
+HONEST,Saint-Denis,Centre Cardiologique du Nord,93200
+FOREVER,Saint-Laurent-du-Var,Centre Médico-Chirurgical Arnault Tzanck,06700
+HONEST,Saint-Laurent-du-Var,Centre Médico-Chirurgical Arnault Tzanck,06700
+PROFID EHRA,Saint-Pierre,CHU de la Réunion,97410
+DAI-T4F,Saint-Pierre,CHU de la Réunion,97410
+FOREVER,Saint-Pierre,CHU de la Réunion,97410
+HONEST,Saint-Pierre,CHU de la Réunion,97410
+HONEST,Saint-Quentin,Centre Hospitalier Saint Quentin,02100
+HONEST,Saintes,Centre Hospitalier Saintonge,17100
+HONEST,Trélazé,Clinique St-Joseph,49800
+HONEST,Trévenans,Hôpital Nord Franche-Comté,90400
+HONEST,Troyes,Centre Hospitalier de Troyes,10000
+DAI-T4F,Valence,Centre Hospitalier de Valence,26000
+HONEST,Valence,Centre Hospitalier de Valence,26000
+HONEST,Vannes,Centre hospitalier Bretagne Atlantique,56000
