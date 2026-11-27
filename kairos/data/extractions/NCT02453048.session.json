@@ -1,0 +1,625 @@
+{
+  "nct_id": "NCT02453048",
+  "title": "BPZE1 nasal live attenuated pertussis vaccine – Phase Ib",
+  "sponsor": "INSERM",
+  "protocol_version": "Study Protocol 2015-09-01",
+  "protocol_date": "2015-09-01",
+  "day_convention": "day0",
+  "arms": [],
+  "visits": [
+    {
+      "id": "V1",
+      "label": "Visit 1 – screening (1 à 6 semaines avant V2)",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": -7,
+      "window_minus_days": 35,
+      "window_plus_days": 0,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 10,
+          "quote": "Visit 1 (screening 1-6 weeks before vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V2",
+      "label": "Visit 2 – Day 0, vaccination",
+      "arm_ids": [],
+      "anchor": null,
+      "offset_days": 0,
+      "window_minus_days": 0,
+      "window_plus_days": 0,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 10,
+          "quote": "Visit 2 (day 0, the day of vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V3",
+      "label": "Visit 3 – Day 4 ±1",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 4,
+      "window_minus_days": 1,
+      "window_plus_days": 1,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 10,
+          "quote": "Visit 3 (4±1 days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V4",
+      "label": "Visit 4 – Day 7 ±1",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 7,
+      "window_minus_days": 1,
+      "window_plus_days": 1,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 10,
+          "quote": "Visit 4 (7±1 days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V5",
+      "label": "Visit 5 – Day 11 ±1",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 11,
+      "window_minus_days": 1,
+      "window_plus_days": 1,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 11,
+          "quote": "Visit 5 (11±1 days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V6",
+      "label": "Visit 6 – Day 14 ±1",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 14,
+      "window_minus_days": 1,
+      "window_plus_days": 1,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 11,
+          "quote": "Visit 6 (14±1 days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V7",
+      "label": "Visit 7 – Day 21 ±1",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 21,
+      "window_minus_days": 1,
+      "window_plus_days": 1,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 11,
+          "quote": "Visit 7 (21±1 days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V8",
+      "label": "Visit 8 – Day 28 (-1 ; +7)",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 28,
+      "window_minus_days": 1,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 11,
+          "quote": "Visit 8 (28 (-1;+7) days after vaccination)"
+        }
+      ]
+    },
+    {
+      "id": "V8b",
+      "label": "Visit 8' – Day 45 (-5 ; +10)",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 45,
+      "window_minus_days": 5,
+      "window_plus_days": 10,
+      "is_dosing": false,
+      "conditional": "uniquement si la culture nasopharyngée de J28 est positive",
+      "sources": [
+        {
+          "page": 31,
+          "quote": "Visit 8’, 45 (-5;+10) days after visit 2"
+        }
+      ]
+    },
+    {
+      "id": "V9",
+      "label": "Visit 9 – Month 6 ±1 month",
+      "arm_ids": [],
+      "anchor": "V2",
+      "offset_days": 182,
+      "window_minus_days": 30,
+      "window_plus_days": 30,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 11,
+          "quote": "Visit 9 (6±1 months after vaccination)"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "REC",
+      "label": "Recruitment, medical record number, screen form",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Recruitment, Medical record number, Screen"
+        }
+      ]
+    },
+    {
+      "id": "ICF",
+      "label": "Information and study consent",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": "avant toute procédure spécifique",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Information and study consent"
+        }
+      ]
+    },
+    {
+      "id": "DEMO",
+      "label": "Demographic information",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Demographic information (age, gender,"
+        }
+      ]
+    },
+    {
+      "id": "VAX",
+      "label": "Vaccination",
+      "visit_ids": [
+        "V2"
+      ],
+      "condition": "surveillance 6 h sur site après administration",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Vaccination:"
+        },
+        {
+          "page": 29,
+          "quote": "The subject should stay at the clinic for 6 hours after administration of the vaccine"
+        }
+      ]
+    },
+    {
+      "id": "MH",
+      "label": "Complete medical history",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Complete medical history"
+        }
+      ]
+    },
+    {
+      "id": "PE",
+      "label": "Physical examination incl. vital signs",
+      "visit_ids": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V8b",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "V1",
+          "note": "examen complet"
+        },
+        {
+          "visit_id": "V2",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V3",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V4",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V5",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V6",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V7",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V8",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V8b",
+          "note": "examen limité"
+        },
+        {
+          "visit_id": "V9",
+          "note": "examen limité"
+        }
+      ],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Physical examination include. vital signs"
+        }
+      ]
+    },
+    {
+      "id": "DIARY",
+      "label": "Interim history / diary (AEFI, concomitant medication)",
+      "visit_ids": [
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V8b",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Interim History/Diary (AEFI documentation,"
+        }
+      ]
+    },
+    {
+      "id": "RAND",
+      "label": "Randomization",
+      "visit_ids": [
+        "V2"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Randomization"
+        }
+      ]
+    },
+    {
+      "id": "ECG",
+      "label": "ECG",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "ECG"
+        }
+      ]
+    },
+    {
+      "id": "HEMA",
+      "label": "Hematology",
+      "visit_ids": [
+        "V1",
+        "V2",
+        "V4",
+        "V6",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Hematology"
+        }
+      ]
+    },
+    {
+      "id": "CHEM",
+      "label": "Blood chemistry",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Blood chemistry"
+        }
+      ]
+    },
+    {
+      "id": "SERO",
+      "label": "Screening for HIV, hepatitis B and C",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Screening for HIV, hepatitis B and C"
+        }
+      ]
+    },
+    {
+      "id": "PTIGG",
+      "label": "Serum pertussis toxin and pertactin IgG antibodies",
+      "visit_ids": [
+        "V1"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Serum pertussis toxin and pertactin IgG"
+        }
+      ]
+    },
+    {
+      "id": "URINE",
+      "label": "Urine analysis (+ dipstick pregnancy test at V2 and V8)",
+      "visit_ids": [
+        "V1",
+        "V2",
+        "V8"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "V2",
+          "note": "test de grossesse urinaire AVANT randomisation (exclusion si positif)"
+        },
+        {
+          "visit_id": "V8",
+          "note": "test de grossesse urinaire"
+        }
+      ],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Urine analysis"
+        },
+        {
+          "page": 16,
+          "quote": "Urine dipstick pregnancy test is to be done at visit 2 before randomization"
+        }
+      ]
+    },
+    {
+      "id": "NPA",
+      "label": "Nasopharyngeal aspirate for BPZE1 culture",
+      "visit_ids": [
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V8b"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "V8",
+          "note": "si culture positive : programmer V8' (J45 -5/+10)"
+        }
+      ],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Nasopharyngeal aspirate for BPZE1 culture"
+        }
+      ]
+    },
+    {
+      "id": "SERAB",
+      "label": "Binding pertussis serum antibodies",
+      "visit_ids": [
+        "V2",
+        "V4",
+        "V6",
+        "V7",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Binding pertussis serum antibodies"
+        }
+      ]
+    },
+    {
+      "id": "NPAB",
+      "label": "Binding pertussis nasopharyngeal antibodies",
+      "visit_ids": [
+        "V3",
+        "V4",
+        "V6",
+        "V7",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Binding pertussis nasopharyngeal antibodies"
+        }
+      ]
+    },
+    {
+      "id": "NPCYT",
+      "label": "Nasopharyngeal cytokines",
+      "visit_ids": [
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Nasopharyngeal cytokines"
+        }
+      ]
+    },
+    {
+      "id": "LPR",
+      "label": "Lymphoproliferative response",
+      "visit_ids": [
+        "V2",
+        "V3",
+        "V6",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "V3",
+          "note": "groupe 3 (haute dose) uniquement"
+        }
+      ],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Lymphoproliferative response"
+        }
+      ]
+    },
+    {
+      "id": "CRYO",
+      "label": "Cryo-preserved cells",
+      "visit_ids": [
+        "V2",
+        "V6",
+        "V8",
+        "V9"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 16,
+          "quote": "Cryo-preserved cells"
+        }
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "description": "Visite 9 : fenêtre « 6±1 months ». La conversion en jours n'est pas définie par le protocole ; KAIROS utilise 182 ±30 jours. À confirmer (calendaire vs 30 jours).",
+      "sources": [
+        {
+          "page": 31,
+          "quote": "Visit 9, 6±1 months after visit 2"
+        }
+      ]
+    },
+    {
+      "description": "Visite 8' conditionnelle : déclenchée par un résultat de laboratoire (culture J28 positive). Le centre doit être prévenu du résultat à temps pour programmer J45 (-5) = J40 au plus tôt.",
+      "sources": [
+        {
+          "page": 31,
+          "quote": "Visit 8’, 45 (-5;+10) days after visit 2"
+        }
+      ]
+    }
+  ],
+  "extraction_notes": "La couche texte du PDF est dégradée (lettres espacées : « I NSE R M ») : le tableau des visites (p.16) a été lu sur l'image. La vérification d'ancrage ignore les espaces, ce qui la rend robuste à ce défaut."
+}

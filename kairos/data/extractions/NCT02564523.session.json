@@ -1,0 +1,828 @@
+{
+  "nct_id": "NCT02564523",
+  "title": "Ad26.ZEBOV / MVA-BN-Filo prime-boost (VAC52150EBL2002)",
+  "sponsor": "Janssen Vaccines & Prevention B.V.",
+  "protocol_version": "Amendment 3",
+  "protocol_date": "2017-05-04",
+  "day_convention": "day1",
+  "arms": [
+    {
+      "id": "G1",
+      "label": "Group 1 – boost J29"
+    },
+    {
+      "id": "G2",
+      "label": "Group 2 – boost J57"
+    },
+    {
+      "id": "G3",
+      "label": "Group 3 – boost J85 (cohorte 1)"
+    }
+  ],
+  "visits": [
+    {
+      "id": "SCR",
+      "label": "Screening (≤8 weeks)",
+      "arm_ids": [],
+      "anchor": "PRIME",
+      "offset_days": -28,
+      "window_minus_days": 28,
+      "window_plus_days": 28,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 27,
+          "quote": "(≤8 weeks)"
+        }
+      ]
+    },
+    {
+      "id": "PRIME",
+      "label": "Day 1 – Prime vaccination",
+      "arm_ids": [],
+      "anchor": null,
+      "offset_days": 0,
+      "window_minus_days": 0,
+      "window_plus_days": 0,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Study Vaccine Administration"
+        }
+      ]
+    },
+    {
+      "id": "PP7",
+      "label": "Day 8 – 7 days post-prime",
+      "arm_ids": [],
+      "anchor": "PRIME",
+      "offset_days": 7,
+      "window_minus_days": 2,
+      "window_plus_days": 2,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Seven Days Post-prime Vaccination Day 8 for all groups ±2 days"
+        }
+      ]
+    },
+    {
+      "id": "PP14",
+      "label": "Day 15 – 14 days post-prime",
+      "arm_ids": [
+        "G2",
+        "G3"
+      ],
+      "anchor": "PRIME",
+      "offset_days": 14,
+      "window_minus_days": 2,
+      "window_plus_days": 2,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Fourteen Days Post-prime Vaccination Day 15 for Group 2 ±2 days"
+        }
+      ]
+    },
+    {
+      "id": "Y1",
+      "label": "Day 365 – 1 year post-prime",
+      "arm_ids": [],
+      "anchor": "PRIME",
+      "offset_days": 364,
+      "window_minus_days": 30,
+      "window_plus_days": 30,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Follow-up 1 Year Post-prime Day 365 for all groups ±30 days"
+        }
+      ]
+    },
+    {
+      "id": "BOOST_G1",
+      "label": "Day 29 – Boost vaccination",
+      "arm_ids": [
+        "G1"
+      ],
+      "anchor": "PRIME",
+      "offset_days": 28,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 29 for Group 1"
+        },
+        {
+          "page": 79,
+          "quote": "Boost Vaccination"
+        }
+      ]
+    },
+    {
+      "id": "PB7_G1",
+      "label": "Day 36 – 7 days post-boost",
+      "arm_ids": [
+        "G1"
+      ],
+      "anchor": "BOOST_G1",
+      "offset_days": 7,
+      "window_minus_days": 2,
+      "window_plus_days": 2,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 36 for Group 1"
+        }
+      ]
+    },
+    {
+      "id": "PB21_G1",
+      "label": "Day 50 – 21 days post-boost",
+      "arm_ids": [
+        "G1"
+      ],
+      "anchor": "BOOST_G1",
+      "offset_days": 21,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 50 for Group 1"
+        }
+      ]
+    },
+    {
+      "id": "PB42_G1",
+      "label": "Day 71 – 42 days post-boost",
+      "arm_ids": [
+        "G1"
+      ],
+      "anchor": "BOOST_G1",
+      "offset_days": 42,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 71 for Group 1"
+        }
+      ]
+    },
+    {
+      "id": "PB6M_G1",
+      "label": "Day 209 – 6 months post-boost",
+      "arm_ids": [
+        "G1"
+      ],
+      "anchor": "BOOST_G1",
+      "offset_days": 180,
+      "window_minus_days": 15,
+      "window_plus_days": 15,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 209 for Group 1"
+        }
+      ]
+    },
+    {
+      "id": "BOOST_G2",
+      "label": "Day 57 – Boost vaccination",
+      "arm_ids": [
+        "G2"
+      ],
+      "anchor": "PRIME",
+      "offset_days": 56,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 57 for Group 2"
+        },
+        {
+          "page": 79,
+          "quote": "Boost Vaccination"
+        }
+      ]
+    },
+    {
+      "id": "PB7_G2",
+      "label": "Day 64 – 7 days post-boost",
+      "arm_ids": [
+        "G2"
+      ],
+      "anchor": "BOOST_G2",
+      "offset_days": 7,
+      "window_minus_days": 2,
+      "window_plus_days": 2,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 64 for Group 2"
+        }
+      ]
+    },
+    {
+      "id": "PB21_G2",
+      "label": "Day 78 – 21 days post-boost",
+      "arm_ids": [
+        "G2"
+      ],
+      "anchor": "BOOST_G2",
+      "offset_days": 21,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 78 for Group 2"
+        }
+      ]
+    },
+    {
+      "id": "PB42_G2",
+      "label": "Day 99 – 42 days post-boost",
+      "arm_ids": [
+        "G2"
+      ],
+      "anchor": "BOOST_G2",
+      "offset_days": 42,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 99 for Group 2"
+        }
+      ]
+    },
+    {
+      "id": "PB6M_G2",
+      "label": "Day 237 – 6 months post-boost",
+      "arm_ids": [
+        "G2"
+      ],
+      "anchor": "BOOST_G2",
+      "offset_days": 180,
+      "window_minus_days": 15,
+      "window_plus_days": 15,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 237 for Group 2"
+        }
+      ]
+    },
+    {
+      "id": "BOOST_G3",
+      "label": "Day 85 – Boost vaccination",
+      "arm_ids": [
+        "G3"
+      ],
+      "anchor": "PRIME",
+      "offset_days": 84,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 85 for Group 3"
+        },
+        {
+          "page": 79,
+          "quote": "Boost Vaccination"
+        }
+      ]
+    },
+    {
+      "id": "PB7_G3",
+      "label": "Day 92 – 7 days post-boost",
+      "arm_ids": [
+        "G3"
+      ],
+      "anchor": "BOOST_G3",
+      "offset_days": 7,
+      "window_minus_days": 2,
+      "window_plus_days": 2,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 92 for Group 3"
+        }
+      ]
+    },
+    {
+      "id": "PB21_G3",
+      "label": "Day 106 – 21 days post-boost",
+      "arm_ids": [
+        "G3"
+      ],
+      "anchor": "BOOST_G3",
+      "offset_days": 21,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 106 for Group 3"
+        }
+      ]
+    },
+    {
+      "id": "PB42_G3",
+      "label": "Day 127 – 42 days post-boost",
+      "arm_ids": [
+        "G3"
+      ],
+      "anchor": "BOOST_G3",
+      "offset_days": 42,
+      "window_minus_days": 3,
+      "window_plus_days": 3,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 127 for Group 3"
+        }
+      ]
+    },
+    {
+      "id": "PB6M_G3",
+      "label": "Day 265 – 6 months post-boost",
+      "arm_ids": [
+        "G3"
+      ],
+      "anchor": "BOOST_G3",
+      "offset_days": 180,
+      "window_minus_days": 15,
+      "window_plus_days": 15,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Day 265 for Group 3"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "ICF",
+      "label": "Informed consent/assent",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Informed consent/assent"
+        }
+      ]
+    },
+    {
+      "id": "IE",
+      "label": "Inclusion/exclusion criteria",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Inclusion/exclusion criteria"
+        }
+      ]
+    },
+    {
+      "id": "TOU",
+      "label": "Test of Understanding (TOU)",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": "après lecture, avant signature du consentement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Test of Understanding (TOU)"
+        }
+      ]
+    },
+    {
+      "id": "ECG",
+      "label": "Electrocardiogram (ECG)",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": "sujets ≥18 ans (cohortes 1 et 2a)",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Electrocardiogram (ECG)"
+        }
+      ]
+    },
+    {
+      "id": "RAND",
+      "label": "Randomization",
+      "visit_ids": [
+        "PRIME"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Randomization"
+        }
+      ]
+    },
+    {
+      "id": "VAX",
+      "label": "Study vaccine administration",
+      "visit_ids": [
+        "PRIME",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Study Vaccine Administration"
+        }
+      ]
+    },
+    {
+      "id": "UPT",
+      "label": "Urine pregnancy test",
+      "visit_ids": [
+        "PRIME",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3"
+      ],
+      "condition": "avant vaccination",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Urine Pregnancy test"
+        }
+      ]
+    },
+    {
+      "id": "PE",
+      "label": "Physical examination",
+      "visit_ids": [
+        "SCR",
+        "PRIME",
+        "PP7",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3",
+        "PB7_G1",
+        "PB7_G2",
+        "PB7_G3",
+        "PB21_G1",
+        "PB21_G2",
+        "PB21_G3",
+        "PB42_G1",
+        "PB42_G2",
+        "PB42_G3",
+        "PB6M_G1",
+        "PB6M_G2",
+        "PB6M_G3",
+        "Y1"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "PRIME",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G1",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G2",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G3",
+          "note": "avant vaccination"
+        }
+      ],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Physical examination"
+        }
+      ]
+    },
+    {
+      "id": "VS",
+      "label": "Vital signs",
+      "visit_ids": [
+        "SCR",
+        "PRIME",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Vital signs"
+        }
+      ]
+    },
+    {
+      "id": "DIARY_DIST",
+      "label": "Distribution of subject diary",
+      "visit_ids": [
+        "PRIME",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Distribution of subject diary"
+        }
+      ]
+    },
+    {
+      "id": "DIARY_REV",
+      "label": "Review of diary by site staff",
+      "visit_ids": [
+        "PP7",
+        "PB7_G1",
+        "PB7_G2",
+        "PB7_G3"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Review of diary by site staff"
+        }
+      ]
+    },
+    {
+      "id": "CHEM",
+      "label": "Chemistry, hematology (10 mL)",
+      "visit_ids": [
+        "SCR",
+        "PRIME",
+        "PP7",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3",
+        "PB7_G1",
+        "PB7_G2",
+        "PB7_G3"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 28,
+          "quote": "Chemistry, hematology (10 mL)"
+        }
+      ]
+    },
+    {
+      "id": "CD4",
+      "label": "CD4+ cell count (2 mL)",
+      "visit_ids": [
+        "SCR",
+        "PRIME",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3",
+        "PB42_G1",
+        "PB42_G2",
+        "PB42_G3"
+      ],
+      "condition": "sujets VIH+ uniquement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 28,
+          "quote": "CD4+ cell count (2 mL)"
+        }
+      ]
+    },
+    {
+      "id": "UA",
+      "label": "Urinalysis",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 28,
+          "quote": "Urinalysis"
+        }
+      ]
+    },
+    {
+      "id": "SERUM",
+      "label": "Blood sampling (serum) – humoral immunity (10 mL)",
+      "visit_ids": [
+        "PRIME",
+        "PP14",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3",
+        "PB7_G1",
+        "PB7_G2",
+        "PB7_G3",
+        "PB21_G1",
+        "PB21_G2",
+        "PB21_G3",
+        "PB6M_G1",
+        "PB6M_G2",
+        "PB6M_G3",
+        "Y1"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "PB7_G1",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PB7_G2",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PB7_G3",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PRIME",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G1",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G2",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G3",
+          "note": "avant vaccination"
+        }
+      ],
+      "sources": [
+        {
+          "page": 28,
+          "quote": "assessment of humoral immune"
+        }
+      ]
+    },
+    {
+      "id": "PBMC",
+      "label": "Blood sampling (PBMC) – cellular immunity (40 or 20 mL)",
+      "visit_ids": [
+        "PRIME",
+        "PP14",
+        "BOOST_G1",
+        "BOOST_G2",
+        "BOOST_G3",
+        "PB7_G1",
+        "PB7_G2",
+        "PB7_G3",
+        "PB21_G1",
+        "PB21_G2",
+        "PB21_G3",
+        "PB6M_G1",
+        "PB6M_G2",
+        "PB6M_G3",
+        "Y1"
+      ],
+      "condition": "centres sélectionnés",
+      "visit_notes": [
+        {
+          "visit_id": "PB7_G1",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PB7_G2",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PB7_G3",
+          "note": "cohortes 1 et 2a uniquement"
+        },
+        {
+          "visit_id": "PRIME",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G1",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G2",
+          "note": "avant vaccination"
+        },
+        {
+          "visit_id": "BOOST_G3",
+          "note": "avant vaccination"
+        }
+      ],
+      "sources": [
+        {
+          "page": 28,
+          "quote": "assessment of cellular immune"
+        }
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "description": "Les fenêtres (Table 3, p.79) sont exprimées en jours d'étude comptés depuis le Day 1 (ex. « Day 36 for Group 1 »), alors que le tableau des visites exprime les visites post-rappel relativement au rappel (« +7d pb »). Si le rappel est fait à J31 (dans sa fenêtre ±3 j), la visite post-rappel est-elle due à J36 ou J38 ? KAIROS ancre sur la date réelle du rappel : choix à confirmer par le promoteur.",
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Seven Days Post-boost Vaccination Day 36 for Group 1 ±2 days"
+        },
+        {
+          "page": 28,
+          "quote": "d pp: days post-prime; d pb: days post-boost"
+        }
+      ]
+    },
+    {
+      "description": "Les fenêtres de visite ne figurent pas dans le tableau des visites (p.27-28) mais dans une table séparée 52 pages plus loin (p.79), et une autre table (Table 6, section 9.1.7) s'applique à la sous-étude de la cohorte 1.",
+      "sources": [
+        {
+          "page": 79,
+          "quote": "Refer to Table 6 (Section 9.1.7) for the visit windows that will be allowed for the Cohort 1 substudy."
+        }
+      ]
+    }
+  ],
+  "extraction_notes": "Périmètre : cohorte 1 et cohortes 2a/2b (tableau p.27-28). Cohortes 3/4, sous-étude et rappels tardifs non modélisés. La couche texte du PDF perd l'alignement des colonnes du tableau : lecture de l'image nécessaire."
+}

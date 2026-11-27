@@ -1,0 +1,537 @@
+{
+  "nct_id": "NCT02886624",
+  "title": "SAHIV – Short duration therapy of acute hepatitis C (grazoprevir/elbasvir 8 weeks)",
+  "sponsor": "Institut de Médecine et d'Épidémiologie Appliquée (IMEA)",
+  "protocol_version": "5.0",
+  "protocol_date": "2018-01-19",
+  "day_convention": "day0",
+  "arms": [],
+  "visits": [
+    {
+      "id": "SCR",
+      "label": "Screening (D-28 à D-7)",
+      "arm_ids": [],
+      "anchor": "D0",
+      "offset_days": -14,
+      "window_minus_days": 14,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": "uniquement si les résultats biologiques d'éligibilité ne sont pas disponibles (1 à 4 semaines avant D0)",
+      "sources": [
+        {
+          "page": 28,
+          "quote": "This visit will take place from D-28 to D-7 before the inclusion visit (D0)."
+        },
+        {
+          "page": 31,
+          "quote": "+7/-14 days for screening visit,"
+        }
+      ]
+    },
+    {
+      "id": "D0",
+      "label": "D0 – Inclusion, début du traitement",
+      "arm_ids": [],
+      "anchor": null,
+      "offset_days": 0,
+      "window_minus_days": 0,
+      "window_plus_days": 0,
+      "is_dosing": true,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Screeninga D0 W4 W8 PT4 PT12 PT48"
+        }
+      ]
+    },
+    {
+      "id": "W4",
+      "label": "W4",
+      "arm_ids": [],
+      "anchor": "D0",
+      "offset_days": 28,
+      "window_minus_days": 7,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 31,
+          "quote": "+/-7 days for visits W4, W8, PT4, PT12, and PT48."
+        }
+      ]
+    },
+    {
+      "id": "W8",
+      "label": "W8 – fin de traitement",
+      "arm_ids": [],
+      "anchor": "D0",
+      "offset_days": 56,
+      "window_minus_days": 7,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 15,
+          "quote": "Anti-HCV treatment: 8 weeks"
+        },
+        {
+          "page": 31,
+          "quote": "+/-7 days for visits W4, W8, PT4, PT12, and PT48."
+        }
+      ]
+    },
+    {
+      "id": "PT4",
+      "label": "PT4 – 4 semaines post-traitement (SVR4)",
+      "arm_ids": [],
+      "anchor": "W8",
+      "offset_days": 28,
+      "window_minus_days": 7,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 31,
+          "quote": "+/-7 days for visits W4, W8, PT4, PT12, and PT48."
+        }
+      ]
+    },
+    {
+      "id": "PT12",
+      "label": "PT12 – 12 semaines post-traitement (SVR12, critère principal)",
+      "arm_ids": [],
+      "anchor": "W8",
+      "offset_days": 84,
+      "window_minus_days": 7,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 31,
+          "quote": "+/-7 days for visits W4, W8, PT4, PT12, and PT48."
+        }
+      ]
+    },
+    {
+      "id": "PT48",
+      "label": "PT48 – 48 semaines post-traitement (fin de suivi)",
+      "arm_ids": [],
+      "anchor": "W8",
+      "offset_days": 336,
+      "window_minus_days": 7,
+      "window_plus_days": 7,
+      "is_dosing": false,
+      "conditional": null,
+      "sources": [
+        {
+          "page": 31,
+          "quote": "The theoretical date of end of patient follow-up in the study is PT48."
+        },
+        {
+          "page": 15,
+          "quote": "Follow up: 48 weeks following the end of the treatment"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "ICF",
+      "label": "Eligibility criteria / Informed Consent",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "SCR",
+          "note": "à faire à D0 si la visite de screening n'a pas lieu"
+        }
+      ],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Eligibility criteria / Informed Consent"
+        }
+      ]
+    },
+    {
+      "id": "EXAM",
+      "label": "Clinical examination (sitting BP, weight)",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12",
+        "PT48"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Clinical examination (including sitting blood pressure,"
+        }
+      ]
+    },
+    {
+      "id": "CONMED",
+      "label": "Concomitant treatments",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Concomitant treatments (After 30 days post-study"
+        }
+      ]
+    },
+    {
+      "id": "AE",
+      "label": "Serious or not serious adverse events",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4"
+      ],
+      "condition": "jusqu'à 30 jours après la fin du traitement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Serious or not serious adverse events (until 30 days"
+        }
+      ]
+    },
+    {
+      "id": "GENO",
+      "label": "HCV Genotype",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HCV Genotype"
+        }
+      ]
+    },
+    {
+      "id": "HCVRNA",
+      "label": "HCV RNA",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12",
+        "PT48"
+      ],
+      "condition": null,
+      "visit_notes": [
+        {
+          "visit_id": "PT48",
+          "note": "si positif : analyse phylogénétique (rechute vs réinfection)"
+        }
+      ],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HCV RNA"
+        }
+      ]
+    },
+    {
+      "id": "HCVAB",
+      "label": "HCV antibodies (ELISA and Rapid test)",
+      "visit_ids": [
+        "D0",
+        "W4"
+      ],
+      "condition": "première infection aiguë uniquement",
+      "visit_notes": [
+        {
+          "visit_id": "W4",
+          "note": "seulement si négatif à D0"
+        }
+      ],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HCV antibodies (ELISA and Rapid test)"
+        }
+      ]
+    },
+    {
+      "id": "HIVAB",
+      "label": "HIV antibodies",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": "patients mono-infectés VHC uniquement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HIV antibodies (only for HCV mono-infected patients)"
+        }
+      ]
+    },
+    {
+      "id": "HBS",
+      "label": "HBs Ag",
+      "visit_ids": [
+        "SCR"
+      ],
+      "condition": "seulement si aucun résultat ≤ 3 mois avant D0",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HBs Agc"
+        }
+      ]
+    },
+    {
+      "id": "LFT",
+      "label": "AST, ALT, total and conjugated bilirubin, GGT, ALP",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12",
+        "PT48"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "AST, ALT, Total and cinjugated bilirubin, GGT, ALP"
+        }
+      ]
+    },
+    {
+      "id": "CD4",
+      "label": "CD4, CD8",
+      "visit_ids": [
+        "D0",
+        "PT12"
+      ],
+      "condition": "co-infectés VIH uniquement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "CD4, CD8 (only for HIV co-infected patients)"
+        }
+      ]
+    },
+    {
+      "id": "HIVRNA",
+      "label": "HIV RNA",
+      "visit_ids": [
+        "D0",
+        "PT12"
+      ],
+      "condition": "co-infectés VIH uniquement",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "HIV RNA (only for HIV co-infected patients)"
+        }
+      ]
+    },
+    {
+      "id": "FBC",
+      "label": "FBC, platelets",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "FBC, platelets"
+        }
+      ]
+    },
+    {
+      "id": "CREAT",
+      "label": "Blood creatinine and creatinine clearance (CKD-EPI)",
+      "visit_ids": [
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Blood creatinine and creatine clearance (CKD-EPI)"
+        }
+      ]
+    },
+    {
+      "id": "PREG",
+      "label": "Beta-HCG (screen) or urinary pregnancy test",
+      "visit_ids": [
+        "SCR",
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12"
+      ],
+      "condition": "si applicable",
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Beta-HCG (Screen) or urinary pregnancy test (if"
+        }
+      ]
+    },
+    {
+      "id": "ADH",
+      "label": "Adherence self-questionnaire",
+      "visit_ids": [
+        "W4",
+        "W8"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Adherence self-questionnaire"
+        }
+      ]
+    },
+    {
+      "id": "QOL",
+      "label": "Quality of life questionnaire",
+      "visit_ids": [
+        "D0",
+        "PT12"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "“Quality of life” Questionnaire"
+        }
+      ]
+    },
+    {
+      "id": "SERUM",
+      "label": "Blood for serum collection (7/8 mL, dry tubes)",
+      "visit_ids": [
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12",
+        "PT48"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Blood for serum collection (7/8 mL in dry tubes)"
+        }
+      ]
+    },
+    {
+      "id": "PLASMA",
+      "label": "Blood for plasma collection (7/8 mL, EDTA)",
+      "visit_ids": [
+        "D0",
+        "W4",
+        "W8",
+        "PT4",
+        "PT12",
+        "PT48"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Blood for plasma collection (7/8 mL in EDTA tubes)"
+        }
+      ]
+    },
+    {
+      "id": "DISP",
+      "label": "Treatment dispensation/return (grazoprevir/elbasvir)",
+      "visit_ids": [
+        "D0",
+        "W4",
+        "W8"
+      ],
+      "condition": null,
+      "visit_notes": [],
+      "sources": [
+        {
+          "page": 27,
+          "quote": "Grazoprevir / Elbasvir"
+        }
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "description": "Coquille dans la description des visites post-traitement : « Quality of life questionnaire (only at and PT12) » — un mot manque. Le tableau des visites indique D0 et PT12 ; KAIROS retient le tableau.",
+      "sources": [
+        {
+          "page": 31,
+          "quote": "“Quality of life” questionnaire (only at and PT12)"
+        }
+      ]
+    },
+    {
+      "description": "Les visites PT sont définies après la fin du traitement. En cas d'arrêt prématuré du traitement, le protocole ne dit pas explicitement si PT4/PT12/PT48 se calculent depuis la date réelle d'arrêt ou depuis W8 théorique. KAIROS ancre sur la visite W8 : à adapter si arrêt précoce.",
+      "sources": [
+        {
+          "page": 15,
+          "quote": "Follow up: 48 weeks following the end of the treatment"
+        }
+      ]
+    }
+  ],
+  "extraction_notes": "Tableau des visites lisible dans la couche texte (p.27). Fenêtres trouvées en section 9.8 (p.31)."
+}

@@ -1,0 +1,4 @@
+data/protocols/
+data/text/
+__pycache__/
+.pytest_cache/
